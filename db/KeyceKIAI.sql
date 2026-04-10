@@ -3,7 +3,7 @@
 --  Réseau social pour étudiants Keyce KIAI (Douala, Yaoundé,
 --  Bafoussam, Ngounde)
 --  Version : 1.0 — À ajuster selon l'évolution du projet
--- ============================================================
+
 
 CREATE DATABASE IF NOT EXISTS keyce_kiai_db
   CHARACTER SET utf8mb4
