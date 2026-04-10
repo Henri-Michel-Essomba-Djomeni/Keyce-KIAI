@@ -1,0 +1,13 @@
+# Configuration sensible
+config/database.php
+.env
+
+# Uploads des utilisateurs
+uploads/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# PHP
+*.log
