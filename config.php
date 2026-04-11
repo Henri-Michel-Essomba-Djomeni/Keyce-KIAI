@@ -2,6 +2,7 @@
 // ============================================================
 //  KEYCE KIAI — CONFIGURATION BASE DE DONNÉES
 //  Connexion sécurisée à MySQL via PDO
+//  Création automatique de la base et de la table si nécessaire
 // ============================================================
 
 // --- Paramètres de connexion ---
@@ -12,21 +13,36 @@ define('DB_PASS', '');
 define('DB_CHARSET', 'utf8mb4');
 define('DB_PORT', 3306);
 
-// --- DSN (Data Source Name) ---
-$dsn = "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;
-
 // --- Options PDO ---
 $options = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,     // Lancer des exceptions en cas d'erreur
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,           // Résultats sous forme de tableau associatif
-    PDO::ATTR_EMULATE_PREPARES   => false,                      // Désactiver les requêtes préparées émulées
-    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES " . DB_CHARSET, // Définir le charset pour la connexion
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES   => false,
 ];
 
 // --- Connexion PDO ---
 try {
-    $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
-    // Connexion réussie
+    // D'abord, connexion SANS spécifier de base de données pour pouvoir la créer
+    $dsn_init = "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";charset=" . DB_CHARSET;
+    $pdo = new PDO($dsn_init, DB_USER, DB_PASS, $options);
+
+    // Créer la base de données si elle n'existe pas
+    $pdo->exec("CREATE DATABASE IF NOT EXISTS `" . DB_NAME . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+
+    // Se connecter à la base de données
+    $pdo->exec("USE `" . DB_NAME . "`");
+
+    // Créer la table si elle n'existe pas
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS liste_des_membres (
+            id            INT AUTO_INCREMENT PRIMARY KEY,
+            nom           VARCHAR(100) NOT NULL,
+            prenom        VARCHAR(100) NOT NULL,
+            telephone     VARCHAR(20)  NOT NULL,
+            date_creation TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+
 } catch (PDOException $e) {
     // Déterminer si c'est une requête API ou HTML
     $isJson = isset($_SERVER['HTTP_ACCEPT']) && 
@@ -68,7 +84,7 @@ try {
                 <ul>
                     <li>✓ XAMPP est démarré et Apache & MySQL sont verts</li>
                     <li>✓ La base de données <strong>KeyceKIAI</strong> existe dans phpMyAdmin</li>
-                    <li>✓ La table <strong>membres_du_groupe</strong> existe</li>
+                    <li>✓ La table <strong>liste_des_membres</strong> existe</li>
                 </ul>
                 <p><a href="http://localhost/phpmyadmin" target="_blank">💾 Ouvrir phpMyAdmin</a></p>
                 <div class="debug">

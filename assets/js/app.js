@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const PHONE_MAX_LENGTH = 15;
     const PHONE_REGEX = /^\+?[0-9]{8,15}$/;
     const API_URL = '/Keyce-KIAI/insert_membre.php';
+    const GET_MEMBRES_URL = '/Keyce-KIAI/get_membres.php';
 
     // =========================================================
     //  VALIDATION
@@ -215,6 +216,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     group.classList.remove('has-error');
                 });
 
+                // Recharger la liste des membres
+                loadMembers();
+
             } else {
                 // Erreur côté serveur
                 showFeedback('error', result.message || 'Une erreur est survenue.');
@@ -229,5 +233,60 @@ document.addEventListener('DOMContentLoaded', () => {
             setLoading(false);
         }
     });
+
+    // =========================================================
+    //  CHARGEMENT DES MEMBRES
+    // =========================================================
+
+    /**
+     * Charge et affiche la liste des membres
+     */
+    async function loadMembers() {
+        const membersList = document.getElementById('members-list');
+        const refreshBtn = document.getElementById('refresh-btn');
+
+        // Afficher le chargement
+        membersList.innerHTML = '<p class="no-members">Chargement...</p>';
+        refreshBtn.disabled = true;
+        refreshBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Chargement...';
+
+        try {
+            const response = await fetch(GET_MEMBRES_URL);
+            const result = await response.json();
+
+            if (result.success) {
+                if (result.membres.length === 0) {
+                    membersList.innerHTML = '<p class="no-members">Aucun membre enregistré pour le moment.</p>';
+                } else {
+                    membersList.innerHTML = result.membres.map(membre => `
+                        <div class="member-item">
+                            <div class="member-info">
+                                <h3>${membre.nom} ${membre.prenom}</h3>
+                                <p>${membre.telephone}</p>
+                            </div>
+                            <div class="member-date">
+                                ${new Date(membre.date_creation).toLocaleDateString('fr-FR')}
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } else {
+                membersList.innerHTML = '<p class="no-members">Erreur lors du chargement des membres.</p>';
+            }
+        } catch (error) {
+            console.error('Erreur de chargement des membres:', error);
+            membersList.innerHTML = '<p class="no-members">Erreur de connexion. Vérifiez votre réseau.</p>';
+        } finally {
+            // Réactiver le bouton
+            refreshBtn.disabled = false;
+            refreshBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Actualiser';
+        }
+    }
+
+    // Charger les membres au chargement de la page
+    loadMembers();
+
+    // Bouton d'actualisation
+    document.getElementById('refresh-btn').addEventListener('click', loadMembers);
 
 });

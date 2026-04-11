@@ -23,13 +23,13 @@ try {
     echo "<p style='color: green;'> ✓ Connexion à la base de données réussie!</p>";
     
     // Vérifier la table
-    $stmt = $pdo->query("SHOW TABLES LIKE 'membres_du_groupe'");
+    $stmt = $pdo->query("SHOW TABLES LIKE 'liste_des_membres'");
     $result = $stmt->fetch();
     
     if ($result) {
-        echo "<p style='color: green;'>✓ Table 'membres_du_groupe' existe!</p>";
+        echo "<p style='color: green;'>✓ Table 'liste_des_membres' existe!</p>";
     } else {
-        echo "<p style='color: orange;'>⚠ Table 'membres_du_groupe' n'existe pas. Importez le SQL.</p>";
+        echo "<p style='color: orange;'>⚠ Table 'liste_des_membres' n'existe pas. Importez le SQL.</p>";
     }
 } catch (Exception $e) {
     echo "<p style='color: red;'>✗ Erreur de connexion:</p>";

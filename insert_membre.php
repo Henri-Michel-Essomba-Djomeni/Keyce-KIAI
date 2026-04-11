@@ -85,7 +85,7 @@ if (!empty($erreurs)) {
 
 // --- Insertion dans la base de données ---
 try {
-    $sql = "INSERT INTO membres_du_groupe (nom, prenom, telephone) VALUES (:nom, :prenom, :telephone)";
+    $sql = "INSERT INTO liste_des_membres (nom, prenom, telephone) VALUES (:nom, :prenom, :telephone)";
     $stmt = $pdo->prepare($sql);
 
     $stmt->execute([

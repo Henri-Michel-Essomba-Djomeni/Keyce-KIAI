@@ -1,7 +1,7 @@
 <?php
 // ============================================================
-//  KEYCE KIAI — RÉCUPÉRATION DE TOUS LES MEMBRES
-//  Retourne la liste des membres au format JSON
+//  KEYCE KIAI — RÉCUPÉRATION DES MEMBRES
+//  Retourne la liste de tous les membres en JSON
 // ============================================================
 
 // --- En-têtes pour autoriser les requêtes AJAX ---
@@ -14,7 +14,7 @@ require_once 'config.php';
 
 // --- Récupérer tous les membres ---
 try {
-    $sql = "SELECT id, nom, prenom, telephone, date_creation FROM membres_du_groupe ORDER BY date_creation DESC";
+    $sql = "SELECT id, nom, prenom, telephone, date_creation FROM liste_des_membres ORDER BY date_creation DESC";
     $stmt = $pdo->query($sql);
     $membres = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -29,9 +29,7 @@ try {
     http_response_code(500);
     echo json_encode([
         'success' => false,
-        'message' => 'Erreur lors de la récupération des membres.',
-        'error' => $e->getMessage()
+        'message' => 'Erreur lors de la récupération des membres.'
     ]);
 }
-?></content>
-<parameter name="filePath">c:\xampp\htdocs\Keyce-KIAI\get_membres.php
+?>
