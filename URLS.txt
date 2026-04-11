@@ -1,0 +1,37 @@
+📍 LIENS IMPORTANTS
+=====================
+
+Copier-coller ces URLs dans votre navigateur:
+
+## Application Keyce KIAI
+http://localhost/Keyce-KIAI/
+
+## Test de Connexion (diagnostic)
+http://localhost/Keyce-KIAI/test_connexion.php
+
+## phpMyAdmin (gérer base de données)
+http://localhost/phpmyadmin
+
+## Accueil WAMP
+http://localhost/
+
+---
+
+⚠️ IMPORTANT:
+- Remplacez `Keyce-KIAI` par le chemin réel SEULEMENT si:
+  - Les fichiers ne sont PAS dans: C:\wamp64\www\Keyce-KIAI\
+  
+- Assure-toi que WAMP est DÉMARRÉ avant d'accéder à ces liens!
+- Si pas d'accès → Vérifiez que les services WAMP sont verts
+
+---
+
+💡 ASTUCE:
+Crée un raccourci sur le desktop:
+1. Fais clic droit sur le desktop
+2. Nouveau → Raccourci
+3. Colle: http://localhost/Keyce-KIAI/
+4. Donne un nom: "Keyce KIAI"
+5. OK!
+
+Maintenant tu peux accéder à l'app en 1 clic! 🚀
