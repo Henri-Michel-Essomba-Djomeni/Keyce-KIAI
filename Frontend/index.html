@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyce KIAI — Connexion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --c1: #FF6B6B;
+      --c2: #FFD93D;
+      --c3: #6BCB77;
+      --c4: #4D96FF;
+      --c5: #C77DFF;
+      --grad-main: linear-gradient(135deg, #FF6B6B 0%, #C77DFF 50%, #4D96FF 100%);
+      --grad-btn:  linear-gradient(135deg, #FF6B6B, #C77DFF);
+      --grad-btn2: linear-gradient(135deg, #4D96FF, #6BCB77);
+      --dark: #0D0D1A;
+      --card: rgba(255,255,255,0.06);
+      --border: rgba(255,255,255,0.12);
+      --text: #ffffff;
+      --muted: rgba(255,255,255,0.55);
+      --input-bg: rgba(255,255,255,0.08);
+      --input-border: rgba(255,255,255,0.15);
+      --input-focus: rgba(199,125,255,0.5);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow: hidden;
+    }
+
+    /* ── ARRIÈRE-PLAN ANIMÉ ── */
+    .bg {
+      position: fixed; inset: 0; z-index: 0;
+      background: var(--dark);
+      overflow: hidden;
+    }
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+    .orb-1 { width: 500px; height: 500px; background: #FF6B6B; top: -150px; left: -100px; animation-delay: 0s; }
+    .orb-2 { width: 400px; height: 400px; background: #C77DFF; top: 30%; right: -100px; animation-delay: -4s; }
+    .orb-3 { width: 350px; height: 350px; background: #4D96FF; bottom: -100px; left: 30%; animation-delay: -8s; }
+    .orb-4 { width: 250px; height: 250px; background: #FFD93D; top: 60%; left: 10%; animation-delay: -2s; }
+
+    @keyframes drift {
+      0%   { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(40px, 30px) scale(1.1); }
+    }
+
+    /* Grille de points décoratifs */
+    .dots {
+      position: fixed; inset: 0; z-index: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    /* ── LAYOUT PRINCIPAL ── */
+    .page {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      overflow-y: auto;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 460px;
+      animation: slideUp 0.6s cubic-bezier(0.16,1,0.3,1) both;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── LOGO ── */
+    .logo-wrap {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 10px 20px;
+      backdrop-filter: blur(20px);
+    }
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: var(--grad-main);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 700;
+      font-family: 'Clash Display', sans-serif;
+    }
+    .logo-text {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 20px; font-weight: 700;
+      background: var(--grad-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .logo-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2rem;
+      backdrop-filter: blur(30px);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.4);
+    }
+
+    /* ── TABS LOGIN / REGISTER ── */
+    .tabs {
+      display: flex;
+      background: rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 4px;
+      margin-bottom: 1.75rem;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px; font-weight: 500;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .tab-btn.active {
+      background: var(--grad-btn);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(199,125,255,0.4);
+    }
+
+    /* ── FORMULAIRES ── */
+    .form { display: none; }
+    .form.active { display: block; animation: fadeIn 0.3s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(10px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .form-title {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 24px; font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .form-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .field { margin-bottom: 14px; }
+    .field label {
+      display: block;
+      font-size: 12px; font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .field input,
+    .field select {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .field input::placeholder { color: rgba(255,255,255,0.3); }
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(199,125,255,0.6);
+      box-shadow: 0 0 0 3px rgba(199,125,255,0.15);
+    }
+    .field select option { background: #1a1a2e; color: #fff; }
+
+    /* ── BOUTON PRINCIPAL ── */
+    .btn-main {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      background: var(--grad-btn);
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 15px; font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+      box-shadow: 0 8px 30px rgba(199,125,255,0.35);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-main::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background 0.2s;
+    }
+    .btn-main:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(199,125,255,0.5); }
+    .btn-main:hover::after { background: rgba(255,255,255,0.08); }
+    .btn-main:active { transform: translateY(0) scale(0.98); }
+    .btn-main:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .btn-register {
+      background: var(--grad-btn2);
+      box-shadow: 0 8px 30px rgba(77,150,255,0.35);
+    }
+    .btn-register:hover { box-shadow: 0 12px 40px rgba(77,150,255,0.5); }
+
+    /* ── SPINNER ── */
+    .spinner {
+      display: none;
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── MESSAGES ── */
+    .msg {
+      display: none;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      margin-bottom: 14px;
+      font-weight: 500;
+    }
+    .msg.error   { background: rgba(255,107,107,0.15); border: 1px solid rgba(255,107,107,0.3); color: #FF6B6B; }
+    .msg.success { background: rgba(107,203,119,0.15); border: 1px solid rgba(107,203,119,0.3); color: #6BCB77; }
+
+    /* ── CAMPUS PILLS ── */
+    .campus-pills {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .campus-pill {
+      padding: 10px 8px;
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      background: var(--input-bg);
+      color: var(--muted);
+      font-size: 13px; font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .campus-pill:hover { border-color: rgba(199,125,255,0.4); color: #fff; }
+    .campus-pill.selected {
+      border-color: #C77DFF;
+      background: rgba(199,125,255,0.15);
+      color: #fff;
+      box-shadow: 0 0 0 2px rgba(199,125,255,0.2);
+    }
+    .campus-pill .emoji { display: block; font-size: 18px; margin-bottom: 3px; }
+    .field-label-campus {
+      font-size: 12px; font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    #ville_id_hidden { display: none; }
+
+    /* ── DIVIDER ── */
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 1.25rem 0;
+      color: var(--muted); font-size: 12px;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1;
+      height: 1px; background: var(--border);
+    }
+
+    /* ── FOOTER ── */
+    .footer-txt {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 1.25rem;
+    }
+    .footer-txt span {
+      color: #C77DFF; cursor: pointer; font-weight: 600;
+    }
+    .footer-txt span:hover { text-decoration: underline; }
+
+    /* ── FLOATING TAGS décoratifs ── */
+    .float-tags {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none; overflow: hidden;
+    }
+    .ftag {
+      position: absolute;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 50px;
+      padding: 6px 14px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.2);
+      white-space: nowrap;
+      animation: floatTag 20s linear infinite;
+    }
+    @keyframes floatTag {
+      0%   { transform: translateY(0) translateX(0); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { transform: translateY(-120vh) translateX(20px); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Arrière-plan -->
+<div class="bg">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+</div>
+<div class="dots"></div>
+
+<!-- Tags flottants décoratifs -->
+<div class="float-tags">
+  <div class="ftag" style="left:5%;  animation-delay:0s;  animation-duration:18s;">🎓 Keyce Douala</div>
+  <div class="ftag" style="left:25%; animation-delay:4s;  animation-duration:22s;">📚 Semestre 2</div>
+  <div class="ftag" style="left:55%; animation-delay:8s;  animation-duration:16s;">🤝 Keyce Yaoundé</div>
+  <div class="ftag" style="left:75%; animation-delay:2s;  animation-duration:24s;">💡 Bafoussam</div>
+  <div class="ftag" style="left:40%; animation-delay:12s; animation-duration:20s;">🌍 Ngounde</div>
+  <div class="ftag" style="left:15%; animation-delay:7s;  animation-duration:19s;">🚀 KIAI Network</div>
+</div>
+
+<!-- Contenu principal -->
+<div class="page">
+  <div class="container">
+
+    <!-- Logo -->
+    <div class="logo-wrap">
+      <div class="logo-badge">
+        <div class="logo-icon">K</div>
+        <span class="logo-text">Keyce KIAI</span>
+      </div>
+      <p class="logo-sub">Le réseau social des étudiants Keyce 🇨🇲</p>
+    </div>
+
+    <!-- Card -->
+    <div class="card">
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('login')">Connexion</button>
+        <button class="tab-btn" onclick="switchTab('register')">Inscription</button>
+      </div>
+
+      <!-- ── FORMULAIRE CONNEXION ── -->
+      <div id="form-login" class="form active">
+        <h2 class="form-title">Bon retour 👋</h2>
+        <p class="form-sub">Connecte-toi à ton réseau Keyce</p>
+
+        <div id="msg-login" class="msg"></div>
+
+        <div class="field">
+          <label>Email universitaire</label>
+          <input type="email" id="login-email" placeholder="ton.email@keyce.cm" autocomplete="email">
+        </div>
+        <div class="field">
+          <label>Mot de passe</label>
+          <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+
+        <button class="btn-main" id="btn-login" onclick="doLogin()">
+          <span id="btn-login-txt">Se connecter</span>
+          <div class="spinner" id="spinner-login"></div>
+        </button>
+
+        <p class="footer-txt" style="margin-top:1rem;">
+          Pas encore de compte ? <span onclick="switchTab('register')">S'inscrire gratuitement</span>
+        </p>
+      </div>
+
+      <!-- ── FORMULAIRE INSCRIPTION ── -->
+      <div id="form-register" class="form">
+        <h2 class="form-title">Rejoins KIAI 🚀</h2>
+        <p class="form-sub">Crée ton profil étudiant Keyce</p>
+
+        <div id="msg-register" class="msg"></div>
+
+        <div class="row-2">
+          <div class="field">
+            <label>Prénom</label>
+            <input type="text" id="reg-prenom" placeholder="Jean">
+          </div>
+          <div class="field">
+            <label>Nom</label>
+            <input type="text" id="reg-nom" placeholder="Dupont">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Email</label>
+          <input type="email" id="reg-email" placeholder="jean.dupont@keyce.cm">
+        </div>
+
+        <div class="field">
+          <label>Filière</label>
+          <input type="text" id="reg-filiere" placeholder="Ex: Informatique, Gestion, Marketing...">
+        </div>
+
+        <div class="row-2">
+          <div class="field">
+            <label>Niveau</label>
+            <select id="reg-niveau">
+              <option value="L1">Licence 1</option>
+              <option value="L2">Licence 2</option>
+              <option value="L3">Licence 3</option>
+              <option value="M1">Master 1</option>
+              <option value="M2">Master 2</option>
+              <option value="BTS1">BTS 1</option>
+              <option value="BTS2">BTS 2</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Mot de passe</label>
+            <input type="password" id="reg-password" placeholder="Min. 6 caractères">
+          </div>
+        </div>
+
+        <!-- Campus pills -->
+        <p class="field-label-campus">Campus Keyce</p>
+        <div class="campus-pills">
+          <div class="campus-pill" onclick="selectCampus(this, 1)">
+            <span class="emoji">🏙️</span>Douala
+          </div>
+          <div class="campus-pill" onclick="selectCampus(this, 2)">
+            <span class="emoji">🌆</span>Yaoundé
+          </div>
+          <div class="campus-pill" onclick="selectCampus(this, 3)">
+            <span class="emoji">🏔️</span>Bafoussam
+          </div>
+          <div class="campus-pill" onclick="selectCampus(this, 4)">
+            <span class="emoji">🌿</span>Ngounde
+          </div>
+        </div>
+        <input type="hidden" id="reg-ville-id" value="">
+
+        <button class="btn-main btn-register" id="btn-register" onclick="doRegister()">
+          <span id="btn-register-txt">Créer mon compte</span>
+          <div class="spinner" id="spinner-register"></div>
+        </button>
+
+        <p class="footer-txt">
+          Déjà inscrit ? <span onclick="switchTab('login')">Se connecter</span>
+        </p>
+      </div>
+
+    </div><!-- /card -->
+  </div><!-- /container -->
+</div><!-- /page -->
+
+<script>
+  // ── SWITCH TABS ──
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach((b,i) => {
+      b.classList.toggle('active', (i===0 && tab==='login') || (i===1 && tab==='register'));
+    });
+    document.getElementById('form-login').classList.toggle('active', tab==='login');
+    document.getElementById('form-register').classList.toggle('active', tab==='register');
+  }
+
+  // ── CAMPUS SELECTION ──
+  function selectCampus(el, id) {
+    document.querySelectorAll('.campus-pill').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('reg-ville-id').value = id;
+  }
+
+  // ── AFFICHER MESSAGE ──
+  function showMsg(id, type, text) {
+    const el = document.getElementById(id);
+    el.className = 'msg ' + type;
+    el.textContent = text;
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 5000);
+  }
+
+  // ── LOADING STATE ──
+  function setLoading(btnId, spinnerId, txtId, loading) {
+    const btn = document.getElementById(btnId);
+    const sp  = document.getElementById(spinnerId);
+    const txt = document.getElementById(txtId);
+    btn.disabled = loading;
+    sp.style.display  = loading ? 'block' : 'none';
+    txt.style.display = loading ? 'none'  : 'block';
+  }
+
+  // ── CONNEXION ──
+  async function doLogin() {
+    const email    = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+
+    if (!email || !password) {
+      showMsg('msg-login', 'error', 'Remplis tous les champs.');
+      return;
+    }
+
+    setLoading('btn-login', 'spinner-login', 'btn-login-txt', true);
+
+    try {
+      const res = await fetch('../backend/auth/login.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, mot_de_passe: password })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        showMsg('msg-login', 'success', '✅ ' + data.message);
+        setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
+      } else {
+        showMsg('msg-login', 'error', '❌ ' + data.message);
+      }
+    } catch (e) {
+      showMsg('msg-login', 'error', '⚠️ Erreur réseau. Vérifie ta connexion.');
+    } finally {
+      setLoading('btn-login', 'spinner-login', 'btn-login-txt', false);
+    }
+  }
+
+  // ── INSCRIPTION ──
+  async function doRegister() {
+    const prenom   = document.getElementById('reg-prenom').value.trim();
+    const nom      = document.getElementById('reg-nom').value.trim();
+    const email    = document.getElementById('reg-email').value.trim();
+    const filiere  = document.getElementById('reg-filiere').value.trim();
+    const niveau   = document.getElementById('reg-niveau').value;
+    const password = document.getElementById('reg-password').value;
+    const ville_id = document.getElementById('reg-ville-id').value;
+
+    if (!prenom || !nom || !email || !password || !ville_id) {
+      showMsg('msg-register', 'error', 'Remplis tous les champs et sélectionne ton campus.');
+      return;
+    }
+    if (password.length < 6) {
+      showMsg('msg-register', 'error', 'Le mot de passe doit faire au moins 6 caractères.');
+      return;
+    }
+
+    setLoading('btn-register', 'spinner-register', 'btn-register-txt', true);
+
+    try {
+      const res = await fetch('../backend/auth/register.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nom, prenom, email,
+          mot_de_passe: password,
+          ville_id: parseInt(ville_id),
+          filiere, niveau
+        })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        showMsg('msg-register', 'success', '🎉 ' + data.message);
+        setTimeout(() => switchTab('login'), 2000);
+      } else {
+        const errs = data.errors ? Object.values(data.errors).join(' — ') : data.message;
+        showMsg('msg-register', 'error', '❌ ' + errs);
+      }
+    } catch (e) {
+      showMsg('msg-register', 'error', '⚠️ Erreur réseau. Vérifie ta connexion.');
+    } finally {
+      setLoading('btn-register', 'spinner-register', 'btn-register-txt', false);
+    }
+  }
+
+  // ── ENTER KEY ──
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      if (document.getElementById('form-login').classList.contains('active')) doLogin();
+      else doRegister();
+    }
+  });
+</script>
+</body>
+</html>
