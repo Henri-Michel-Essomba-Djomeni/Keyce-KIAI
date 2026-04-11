@@ -1,0 +1,31 @@
+# ============================================================
+#  KEYCE KIAI — .gitignore
+#  Fichiers à NE PAS envoyer sur GitHub
+# ============================================================
+
+# Configuration sensible (mots de passe, clés API)
+config/database.php
+.env
+*.env
+
+# Uploads des utilisateurs (photos de profil, vidéos, etc.)
+uploads/
+!uploads/.gitkeep
+
+# Fichiers système Windows / Mac
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Logs PHP
+*.log
+logs/
+
+# Éditeurs de code
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Dépendances (si Composer utilisé plus tard)
+vendor/
