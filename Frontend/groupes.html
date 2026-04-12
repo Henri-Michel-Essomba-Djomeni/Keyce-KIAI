@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyce KIAI — Groupes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --c1:#FF6B6B; --c2:#FFD93D; --c3:#6BCB77; --c4:#4D96FF; --c5:#C77DFF;
+      --grad-main:linear-gradient(135deg,#FF6B6B 0%,#C77DFF 50%,#4D96FF 100%);
+      --grad-btn:linear-gradient(135deg,#FF6B6B,#C77DFF);
+      --dark:#0D0D1A; --card:#191930; --border:rgba(255,255,255,0.08);
+      --muted:rgba(255,255,255,0.5); --input-bg:rgba(255,255,255,0.06);
+    }
+    html,body { min-height:100%; background:var(--dark); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:14px; }
+
+    /* NAVBAR */
+    .navbar { position:fixed; top:0; left:0; right:0; z-index:100; height:60px; background:rgba(13,13,26,0.9); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 1.5rem; gap:1rem; }
+    .nav-logo { display:flex; align-items:center; gap:8px; text-decoration:none; }
+    .nav-logo-icon { width:32px; height:32px; background:var(--grad-main); border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'Clash Display',sans-serif; font-size:16px; font-weight:700; }
+    .nav-logo-txt { font-family:'Clash Display',sans-serif; font-size:18px; font-weight:700; background:var(--grad-main); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .nav-search { flex:1; max-width:360px; margin:0 auto; position:relative; }
+    .nav-search input { width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:50px; padding:8px 16px 8px 36px; color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; outline:none; }
+    .nav-search input::placeholder { color:var(--muted); }
+    .nav-search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--muted); }
+    .nav-actions { display:flex; align-items:center; gap:8px; margin-left:auto; }
+    .nav-icon-btn { width:36px; height:36px; background:var(--input-bg); border:1px solid var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; position:relative; }
+    .notif-badge { position:absolute; top:-2px; right:-2px; width:16px; height:16px; background:var(--c1); border-radius:50%; font-size:9px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+    .nav-avatar { width:36px; height:36px; background:var(--grad-main); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; cursor:pointer; }
+
+    /* LAYOUT */
+    .layout { max-width:1100px; margin:0 auto; padding:76px 1rem 2rem; display:grid; grid-template-columns:240px 1fr 260px; gap:1.5rem; }
+    .sidebar-left { position:sticky; top:76px; align-self:start; }
+    .nav-menu { list-style:none; background:var(--card); border:1px solid var(--border); border-radius:16px; padding:8px; }
+    .nav-menu li { margin-bottom:4px; }
+    .nav-menu a { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:12px; color:var(--muted); text-decoration:none; font-size:14px; font-weight:500; transition:all 0.2s; }
+    .nav-menu a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+    .nav-menu a.active { background:rgba(199,125,255,0.12); color:#C77DFF; }
+    .nav-menu .icon { font-size:18px; width:20px; text-align:center; }
+    .menu-badge { margin-left:auto; background:var(--c1); color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:50px; }
+
+    /* MAIN */
+    .groups-main { min-width:0; }
+
+    /* Page header */
+    .page-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; }
+    .page-title { font-family:'Clash Display',sans-serif; font-size:24px; font-weight:700; }
+    .btn-create { display:flex; align-items:center; gap:8px; padding:10px 22px; background:var(--grad-btn); border:none; border-radius:50px; color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; box-shadow:0 4px 15px rgba(199,125,255,0.3); transition:opacity 0.2s, transform 0.15s; }
+    .btn-create:hover { opacity:0.9; transform:translateY(-1px); }
+
+    /* Filtres */
+    .group-filters { display:flex; gap:6px; margin-bottom:1.25rem; overflow-x:auto; padding-bottom:4px; scrollbar-width:none; }
+    .group-filters::-webkit-scrollbar { display:none; }
+    .gf-pill { flex-shrink:0; padding:7px 16px; background:var(--card); border:1px solid var(--border); border-radius:50px; color:var(--muted); font-size:13px; font-weight:500; cursor:pointer; transition:all 0.2s; }
+    .gf-pill.active { background:var(--grad-btn); border-color:transparent; color:#fff; box-shadow:0 4px 14px rgba(199,125,255,0.3); }
+    .gf-pill:hover:not(.active) { color:#fff; border-color:rgba(255,255,255,0.18); }
+
+    /* Mes groupes section */
+    .section-lbl { font-family:'Clash Display',sans-serif; font-size:14px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:12px; }
+
+    /* Grille de groupes */
+    .groups-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:14px; margin-bottom:1.75rem; }
+
+    .group-card {
+      background:var(--card); border:1px solid var(--border); border-radius:18px;
+      overflow:hidden; cursor:pointer; transition:all 0.22s;
+      animation:fadeUp 0.38s ease both;
+    }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);} }
+    .group-card:hover { border-color:rgba(255,255,255,0.15); transform:translateY(-3px); box-shadow:0 12px 32px rgba(0,0,0,0.4); }
+
+    .group-card-cover {
+      height:90px; position:relative; overflow:hidden;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .group-card-cover-dots {
+      position:absolute; inset:0;
+      background-image:radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px);
+      background-size:22px 22px;
+    }
+    .group-card-icon { font-size:36px; position:relative; z-index:1; }
+    .group-card-badge { position:absolute; top:10px; right:10px; font-size:10px; font-weight:700; padding:3px 10px; border-radius:50px; }
+    .badge-official { background:rgba(255,217,61,0.25); color:#FFD93D; border:1px solid rgba(255,217,61,0.3); }
+    .badge-open { background:rgba(107,203,119,0.2); color:#6BCB77; border:1px solid rgba(107,203,119,0.3); }
+    .badge-private { background:rgba(255,107,107,0.2); color:#FF6B6B; border:1px solid rgba(255,107,107,0.3); }
+
+    .group-card-body { padding:14px; }
+    .gc-name { font-family:'Clash Display',sans-serif; font-size:16px; font-weight:700; margin-bottom:4px; }
+    .gc-desc { font-size:13px; color:var(--muted); line-height:1.5; margin-bottom:12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .gc-meta { display:flex; align-items:center; justify-content:space-between; }
+    .gc-members { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); }
+    .gc-av-stack { display:flex; }
+    .gc-av-mini { width:22px; height:22px; border-radius:50%; border:2px solid var(--card); margin-left:-6px; font-size:9px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+    .gc-av-mini:first-child { margin-left:0; }
+    .gc-action { padding:6px 16px; border-radius:50px; font-size:12px; font-weight:600; cursor:pointer; border:none; transition:all 0.2s; }
+    .gc-action-join { background:rgba(77,150,255,0.15); color:#4D96FF; border:1px solid rgba(77,150,255,0.3); }
+    .gc-action-join:hover { background:rgba(77,150,255,0.28); }
+    .gc-action-view { background:rgba(199,125,255,0.12); color:#C77DFF; border:1px solid rgba(199,125,255,0.25); }
+    .gc-action-view:hover { background:rgba(199,125,255,0.22); }
+    .gc-action-joined { background:rgba(107,203,119,0.12); color:#6BCB77; border:1px solid rgba(107,203,119,0.25); }
+
+    /* Group detail modal */
+    .modal-overlay { display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.75); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:1rem; }
+    .modal-overlay.open { display:flex; }
+    .modal { background:var(--card); border:1px solid var(--border); border-radius:22px; width:100%; max-width:560px; max-height:90vh; overflow-y:auto; animation:fadeUp 0.3s ease; }
+    .modal-cover { height:140px; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center; border-radius:22px 22px 0 0; }
+    .modal-cover-dots { position:absolute; inset:0; background-image:radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px); background-size:24px 24px; }
+    .modal-cover-icon { font-size:52px; position:relative; z-index:1; }
+    .modal-close { position:absolute; top:12px; right:12px; width:32px; height:32px; background:rgba(0,0,0,0.4); border:none; border-radius:50%; color:#fff; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:2; }
+    .modal-body { padding:1.5rem; }
+    .modal-name { font-family:'Clash Display',sans-serif; font-size:22px; font-weight:700; margin-bottom:6px; }
+    .modal-desc { font-size:14px; color:var(--muted); line-height:1.65; margin-bottom:18px; }
+    .modal-stats { display:flex; gap:0; background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:12px; margin-bottom:18px; overflow:hidden; }
+    .ms { flex:1; text-align:center; padding:12px 8px; border-right:1px solid var(--border); }
+    .ms:last-child { border-right:none; }
+    .ms-num { font-family:'Clash Display',sans-serif; font-size:18px; font-weight:700; background:var(--grad-main); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .ms-lbl { font-size:11px; color:var(--muted); margin-top:2px; }
+    .modal-members-title { font-weight:700; font-size:14px; margin-bottom:10px; }
+    .modal-member-item { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
+    .modal-member-item:last-child { border-bottom:none; }
+    .mm-av { width:36px; height:36px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; }
+    .mm-info { flex:1; }
+    .mm-name { font-size:13px; font-weight:600; }
+    .mm-role { font-size:11px; color:var(--muted); }
+    .mm-campus { font-size:11px; }
+    .modal-footer { display:flex; gap:10px; margin-top:20px; }
+    .btn-join-modal { flex:1; padding:11px; background:var(--grad-btn); border:none; border-radius:50px; color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; box-shadow:0 4px 14px rgba(199,125,255,0.3); transition:opacity 0.2s; }
+    .btn-join-modal:hover { opacity:0.9; }
+    .btn-msg-group { padding:11px 22px; background:var(--input-bg); border:1px solid var(--border); border-radius:50px; color:var(--muted); font-family:'Plus Jakarta Sans',sans-serif; font-size:14px; cursor:pointer; transition:all 0.2s; }
+    .btn-msg-group:hover { color:#fff; }
+
+    /* Create group modal */
+    .form-group { margin-bottom:14px; }
+    .form-label { font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px; display:block; }
+    .form-input { width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:10px; padding:10px 14px; color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s; }
+    .form-input:focus { border-color:rgba(199,125,255,0.4); }
+    .form-input::placeholder { color:var(--muted); }
+    textarea.form-input { resize:vertical; min-height:70px; }
+    select.form-input option { background:#191930; }
+    .icon-picker { display:flex; flex-wrap:wrap; gap:8px; }
+    .icon-opt { width:40px; height:40px; border-radius:10px; background:var(--input-bg); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:20px; cursor:pointer; transition:all 0.2s; }
+    .icon-opt.selected { background:rgba(199,125,255,0.2); border-color:rgba(199,125,255,0.5); }
+    .icon-opt:hover:not(.selected) { background:rgba(255,255,255,0.08); }
+
+    /* Sidebar droite */
+    .sidebar-right { position:sticky; top:76px; align-self:start; }
+    .widget { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1rem; margin-bottom:12px; }
+    .widget-title { font-family:'Clash Display',sans-serif; font-size:13px; font-weight:600; margin-bottom:12px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; }
+
+    .my-group-mini { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); cursor:pointer; transition:opacity 0.2s; }
+    .my-group-mini:hover { opacity:0.8; }
+    .my-group-mini:last-child { border-bottom:none; }
+    .mg-icon { width:36px; height:36px; border-radius:10px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:18px; }
+    .mg-info { flex:1; min-width:0; }
+    .mg-name { font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .mg-members { font-size:11px; color:var(--muted); }
+    .mg-unread { min-width:18px; height:18px; background:var(--c5); border-radius:9px; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; padding:0 5px; }
+
+    /* Toast */
+    .toast { position:fixed; bottom:24px; right:24px; background:var(--card); border:1px solid rgba(107,203,119,0.4); border-radius:12px; padding:12px 20px; color:#6BCB77; font-weight:600; font-size:14px; z-index:999; display:none; animation:fadeUp 0.3s ease; }
+
+    @media(max-width:900px){.layout{grid-template-columns:1fr;}.sidebar-left,.sidebar-right{display:none;}}
+    @media(max-width:600px){.nav-search{display:none;}.groups-grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<nav class="navbar">
+  <a href="dashboard.html" class="nav-logo"><div class="nav-logo-icon">K</div><span class="nav-logo-txt">KIAI</span></a>
+  <div class="nav-search"><span class="nav-search-icon">🔍</span><input type="text" placeholder="Chercher un groupe…" oninput="searchGroups(this.value)"></div>
+  <div class="nav-actions">
+    <div class="nav-icon-btn">💬<span class="notif-badge">3</span></div>
+    <div class="nav-icon-btn">🔔<span class="notif-badge">7</span></div>
+    <div class="nav-avatar">H</div>
+  </div>
+</nav>
+
+<div class="layout">
+  <aside class="sidebar-left">
+    <ul class="nav-menu">
+      <li><a href="dashboard.html"><span class="icon">🏠</span> Fil d'actualité</a></li>
+      <li><a href="profil.html"><span class="icon">👤</span> Mon profil</a></li>
+      <li><a href="messagerie.html"><span class="icon">💬</span> Messagerie <span class="menu-badge">3</span></a></li>
+      <li><a href="groupes.html" class="active"><span class="icon">👥</span> Groupes</a></li>
+      <li><a href="notifications.html"><span class="icon">🔔</span> Notifications <span class="menu-badge">7</span></a></li>
+      <li><a href="decouvrir.html"><span class="icon">🔍</span> Découvrir</a></li>
+      <li><a href="parametres.html"><span class="icon">⚙️</span> Paramètres</a></li>
+      <li><a href="index.html"><span class="icon">🚪</span> Déconnexion</a></li>
+    </ul>
+  </aside>
+
+  <main class="groups-main">
+    <div class="page-hdr">
+      <div class="page-title">👥 Groupes</div>
+      <button class="btn-create" onclick="openCreateModal()">✨ Créer un groupe</button>
+    </div>
+
+    <div class="group-filters">
+      <div class="gf-pill active" onclick="filterGroups('all',this)">🌍 Tous</div>
+      <div class="gf-pill" onclick="filterGroups('mine',this)">✅ Mes groupes</div>
+      <div class="gf-pill" onclick="filterGroups('tech',this)">💻 Tech</div>
+      <div class="gf-pill" onclick="filterGroups('academique',this)">🎓 Académique</div>
+      <div class="gf-pill" onclick="filterGroups('social',this)">🎉 Social</div>
+      <div class="gf-pill" onclick="filterGroups('officiel',this)">⭐ Officiel</div>
+    </div>
+
+    <div class="section-lbl" id="section-lbl">Tous les groupes</div>
+    <div class="groups-grid" id="groups-grid"></div>
+  </main>
+
+  <aside class="sidebar-right">
+    <div class="widget">
+      <div class="widget-title">Mes groupes</div>
+      <div id="my-groups-widget"></div>
+    </div>
+    <div class="widget">
+      <div class="widget-title">Groupes suggérés</div>
+      <div id="suggested-widget"></div>
+    </div>
+  </aside>
+</div>
+
+<!-- Group detail modal -->
+<div class="modal-overlay" id="detail-modal">
+  <div class="modal" id="detail-modal-content"></div>
+</div>
+
+<!-- Create group modal -->
+<div class="modal-overlay" id="create-modal">
+  <div class="modal">
+    <div style="padding:1.5rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div style="font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700">✨ Créer un groupe</div>
+        <button style="width:32px;height:32px;background:var(--input-bg);border:1px solid var(--border);border-radius:50%;cursor:pointer;color:var(--muted);font-size:16px;display:flex;align-items:center;justify-content:center" onclick="closeCreateModal()">✕</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nom du groupe</label>
+        <input class="form-input" id="new-group-name" placeholder="Ex : L3 Info Yaoundé 2025">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-input" id="new-group-desc" placeholder="Décrivez l'objectif de votre groupe…"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Icône</label>
+        <div class="icon-picker" id="icon-picker">
+          💻 📚 🎓 🎉 ⭐ 🏆 🚀 🔬 📊 🎨 🏀 🎵 🌍 💡 🤝
+        </div>
+      </div>
+      <div class="form-group" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label class="form-label">Campus</label>
+          <select class="form-input" id="new-group-campus">
+            <option value="Tous">Tous les campus</option>
+            <option value="Yaoundé">Yaoundé</option>
+            <option value="Douala">Douala</option>
+            <option value="Bafoussam">Bafoussam</option>
+            <option value="Ngounde">Ngounde</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">Catégorie</label>
+          <select class="form-input" id="new-group-cat">
+            <option value="tech">💻 Tech</option>
+            <option value="academique">🎓 Académique</option>
+            <option value="social">🎉 Social</option>
+            <option value="officiel">⭐ Officiel</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Visibilité</label>
+        <div style="display:flex;gap:8px">
+          <div id="vis-open" class="gf-pill active" onclick="selectVis('open')" style="cursor:pointer">🟢 Ouvert</div>
+          <div id="vis-private" class="gf-pill" onclick="selectVis('private')" style="cursor:pointer">🔒 Privé</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px">
+        <button style="padding:10px 20px;background:var(--input-bg);border:1px solid var(--border);border-radius:50px;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;cursor:pointer" onclick="closeCreateModal()">Annuler</button>
+        <button style="padding:10px 26px;background:var(--grad-btn);border:none;border-radius:50px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(199,125,255,0.3)" onclick="createGroup()">✨ Créer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ICONS_LIST = ['💻','📚','🎓','🎉','⭐','🏆','🚀','🔬','📊','🎨','🏀','🎵','🌍','💡','🤝'];
+let selectedIcon = '💻';
+let selectedVis = 'open';
+
+const MEMBERS_DEMO = [
+  {name:'Henri Michel (Toi)',init:'H',grad:'linear-gradient(135deg,#4D96FF,#C77DFF)',role:'Fondateur',campus:'Yaoundé'},
+  {name:'Amina Bello',init:'AB',grad:'linear-gradient(135deg,#FF6B6B,#FFD93D)',role:'Membre',campus:'Douala'},
+  {name:'Kevin Fouda',init:'KF',grad:'linear-gradient(135deg,#4D96FF,#C77DFF)',role:'Modérateur',campus:'Yaoundé'},
+  {name:'Sara Ondo',init:'SO',grad:'linear-gradient(135deg,#C77DFF,#4D96FF)',role:'Membre',campus:'Douala'},
+  {name:'Marc Tchinda',init:'MT',grad:'linear-gradient(135deg,#6BCB77,#FFD93D)',role:'Membre',campus:'Bafoussam'},
+];
+
+let GROUPS = [
+  { id:1, name:'Devs Keyce 🇨🇲', icon:'💻', bg:'linear-gradient(135deg,rgba(77,150,255,0.3),rgba(107,203,119,0.2))', desc:'Communauté des développeurs de tous les campus. Partage de ressources, projets collaboratifs et entraide entre passionnés.', members:234, posts:1247, campus:'Tous', cat:'tech', badge:'open', mine:true },
+  { id:2, name:'PFE & Stages 2025', icon:'🎓', bg:'linear-gradient(135deg,rgba(199,125,255,0.3),rgba(77,150,255,0.2))', desc:'Recherche de stages, conseils PFE, partage d\'offres et retours d\'expérience. Promo 2025 unis !', members:412, posts:892, campus:'Tous', cat:'academique', badge:'open', mine:true },
+  { id:3, name:'Délégués Keyce ⭐', icon:'⭐', bg:'linear-gradient(135deg,rgba(255,217,61,0.3),rgba(255,107,107,0.2))', desc:'Espace officiel des délégués de classe de tous les campus pour coordination et remontées institutionnelles.', members:18, posts:143, campus:'Tous', cat:'officiel', badge:'official', mine:true },
+  { id:4, name:'Keyce Douala – L3 Info', icon:'🏙️', bg:'linear-gradient(135deg,rgba(255,107,107,0.3),rgba(255,217,61,0.2))', desc:'Groupe dédié aux L3 Informatique du campus de Douala pour les cours, TD et révisions.', members:45, posts:324, campus:'Douala', cat:'academique', badge:'private', mine:false },
+  { id:5, name:'Révisions Compta & Finance', icon:'📊', bg:'linear-gradient(135deg,rgba(107,203,119,0.3),rgba(77,150,255,0.2))', desc:'Exercices corrigés, QCM de révision, partage de notes pour toutes les promos comptabilité et finance.', members:187, posts:678, campus:'Tous', cat:'academique', badge:'open', mine:false },
+  { id:6, name:'Vie étudiante Keyce', icon:'🎉', bg:'linear-gradient(135deg,rgba(255,107,107,0.25),rgba(199,125,255,0.2))', desc:'Événements, sorties, photos, vie sociale sur les 4 campus. Rejoins la communauté étudiante !', members:589, posts:2341, campus:'Tous', cat:'social', badge:'open', mine:false },
+  { id:7, name:'Startup & Innovation', icon:'🚀', bg:'linear-gradient(135deg,rgba(77,150,255,0.3),rgba(199,125,255,0.25))', desc:'Pour les entrepreneurs en herbe : idées, pitchs, retours, networking et partage d\'opportunités.', members:76, posts:234, campus:'Tous', cat:'tech', badge:'open', mine:false },
+  { id:8, name:'Keyce Bafoussam Music 🎵', icon:'🎵', bg:'linear-gradient(135deg,rgba(107,203,119,0.3),rgba(255,217,61,0.2))', desc:'Passion musique sur le campus de Bafoussam : concerts, partages, collaborations artistiques.', members:53, posts:189, campus:'Bafoussam', cat:'social', badge:'open', mine:false },
+];
+
+const BADGE_COLORS = {
+  open:{cls:'badge-open',lbl:'🟢 Ouvert'},
+  official:{cls:'badge-official',lbl:'⭐ Officiel'},
+  private:{cls:'badge-private',lbl:'🔒 Privé'},
+};
+
+let curFilter = 'all';
+const joinedIds = new Set([1,2,3]);
+
+function getFilteredGroups(filter, q='') {
+  let list = GROUPS;
+  if(filter === 'mine') list = list.filter(g => joinedIds.has(g.id));
+  else if(filter !== 'all') list = list.filter(g => g.cat === filter);
+  if(q) list = list.filter(g => g.name.toLowerCase().includes(q.toLowerCase()) || g.desc.toLowerCase().includes(q.toLowerCase()));
+  return list;
+}
+
+function buildAvatarStack() {
+  return MEMBERS_DEMO.slice(0,4).map((m,i)=>`<div class="gc-av-mini" style="background:${m.grad};color:#fff;z-index:${4-i}">${m.init}</div>`).join('');
+}
+
+function renderGroups(list) {
+  const grid = document.getElementById('groups-grid');
+  grid.innerHTML = list.map((g, i) => {
+    const b = BADGE_COLORS[g.badge];
+    const joined = joinedIds.has(g.id);
+    return `<div class="group-card" style="animation-delay:${i*0.06}s" onclick="openGroupDetail(${g.id})">
+      <div class="group-card-cover" style="background:${g.bg}">
+        <div class="group-card-cover-dots"></div>
+        <div class="group-card-icon">${g.icon}</div>
+        <div class="group-card-badge ${b.cls}">${b.lbl}</div>
+      </div>
+      <div class="group-card-body">
+        <div class="gc-name">${g.name}</div>
+        <div class="gc-desc">${g.desc}</div>
+        <div class="gc-meta">
+          <div class="gc-members">
+            <div class="gc-av-stack">${buildAvatarStack()}</div>
+            <span>${g.members} membres</span>
+          </div>
+          <button class="gc-action ${joined ? 'gc-action-joined' : g.mine===false&&!joined ? 'gc-action-join' : 'gc-action-view'}"
+            onclick="event.stopPropagation(); toggleJoin(${g.id}, this)">
+            ${joined ? '✓ Rejoint' : '+ Rejoindre'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterGroups(type, btn) {
+  curFilter = type;
+  document.querySelectorAll('.gf-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  const labels = {all:'Tous les groupes',mine:'Mes groupes',tech:'Groupes Tech',academique:'Groupes Académiques',social:'Groupes Sociaux',officiel:'Groupes Officiels'};
+  document.getElementById('section-lbl').textContent = labels[type] || 'Groupes';
+  renderGroups(getFilteredGroups(type));
+}
+
+function searchGroups(q) { renderGroups(getFilteredGroups(curFilter, q)); }
+
+function toggleJoin(id, btn) {
+  if(joinedIds.has(id)) return;
+  joinedIds.add(id);
+  btn.textContent = '✓ Rejoint';
+  btn.className = 'gc-action gc-action-joined';
+  renderMyGroupsWidget();
+  showToast('✓ Groupe rejoint avec succès !');
+}
+
+// ── GROUP DETAIL MODAL ──
+function openGroupDetail(id) {
+  const g = GROUPS.find(g => g.id === id);
+  if(!g) return;
+  const b = BADGE_COLORS[g.badge];
+  const joined = joinedIds.has(g.id);
+  document.getElementById('detail-modal-content').innerHTML = `
+    <div class="modal-cover" style="background:${g.bg}">
+      <div class="modal-cover-dots"></div>
+      <div class="modal-cover-icon">${g.icon}</div>
+      <button class="modal-close" onclick="document.getElementById('detail-modal').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px">
+        <div class="modal-name">${g.name}</div>
+        <span class="group-card-badge ${b.cls}" style="position:static;margin-top:6px">${b.lbl}</span>
+      </div>
+      <div class="modal-desc">${g.desc}</div>
+      <div class="modal-stats">
+        <div class="ms"><div class="ms-num">${g.members}</div><div class="ms-lbl">Membres</div></div>
+        <div class="ms"><div class="ms-num">${g.posts}</div><div class="ms-lbl">Publications</div></div>
+        <div class="ms"><div class="ms-num">${g.campus}</div><div class="ms-lbl">Campus</div></div>
+      </div>
+      <div class="modal-members-title">👥 Membres actifs</div>
+      ${MEMBERS_DEMO.map(m=>`
+        <div class="modal-member-item">
+          <div class="mm-av" style="background:${m.grad};color:#fff">${m.init}</div>
+          <div class="mm-info">
+            <div class="mm-name">${m.name}</div>
+            <div class="mm-role" style="color:${m.role==='Fondateur'?'#FFD93D':m.role==='Modérateur'?'#C77DFF':'var(--muted)'}">${m.role} · ${m.campus}</div>
+          </div>
+        </div>`).join('')}
+      <div class="modal-footer">
+        ${joined
+          ? `<button class="btn-join-modal" style="background:rgba(107,203,119,0.15);border:1px solid rgba(107,203,119,0.3);color:#6BCB77;box-shadow:none">✓ Déjà membre</button>`
+          : `<button class="btn-join-modal" onclick="toggleJoin(${g.id},this);this.textContent='✓ Rejoint !';this.style.background='rgba(107,203,119,0.15)';this.style.color='#6BCB77'">+ Rejoindre le groupe</button>`}
+        <button class="btn-msg-group" onclick="window.location.href='messagerie.html'">💬 Message</button>
+      </div>
+    </div>`;
+  document.getElementById('detail-modal').classList.add('open');
+}
+
+document.getElementById('detail-modal').addEventListener('click', e => {
+  if(e.target === document.getElementById('detail-modal')) document.getElementById('detail-modal').classList.remove('open');
+});
+
+// ── CREATE GROUP MODAL ──
+function openCreateModal() {
+  // Build icon picker
+  const picker = document.getElementById('icon-picker');
+  picker.innerHTML = ICONS_LIST.map(ic => `<div class="icon-opt ${ic===selectedIcon?'selected':''}" onclick="pickIcon('${ic}',this)">${ic}</div>`).join('');
+  document.getElementById('create-modal').classList.add('open');
+}
+function closeCreateModal() { document.getElementById('create-modal').classList.remove('open'); }
+document.getElementById('create-modal').addEventListener('click', e => {
+  if(e.target === document.getElementById('create-modal')) closeCreateModal();
+});
+function pickIcon(ic, el) {
+  selectedIcon = ic;
+  document.querySelectorAll('.icon-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function selectVis(v) {
+  selectedVis = v;
+  document.getElementById('vis-open').classList.toggle('active', v==='open');
+  document.getElementById('vis-private').classList.toggle('active', v==='private');
+}
+function createGroup() {
+  const name = document.getElementById('new-group-name').value.trim();
+  const desc = document.getElementById('new-group-desc').value.trim();
+  if(!name) { alert('Donne un nom à ton groupe !'); return; }
+  const cat = document.getElementById('new-group-cat').value;
+  const campus = document.getElementById('new-group-campus').value;
+  const bgs = ['linear-gradient(135deg,rgba(199,125,255,0.3),rgba(77,150,255,0.2))','linear-gradient(135deg,rgba(107,203,119,0.3),rgba(255,217,61,0.2))','linear-gradient(135deg,rgba(255,107,107,0.3),rgba(199,125,255,0.2))'];
+  const newG = {
+    id:Date.now(), name, icon:selectedIcon, bg:bgs[Math.floor(Math.random()*bgs.length)],
+    desc:desc||'Groupe créé sur KIAI', members:1, posts:0, campus, cat,
+    badge:selectedVis==='open'?'open':'private', mine:true
+  };
+  GROUPS.unshift(newG);
+  joinedIds.add(newG.id);
+  closeCreateModal();
+  renderGroups(getFilteredGroups(curFilter));
+  renderMyGroupsWidget();
+  showToast('✨ Groupe créé avec succès !');
+}
+
+// ── WIDGETS ──
+function renderMyGroupsWidget() {
+  const mine = GROUPS.filter(g => joinedIds.has(g.id)).slice(0,5);
+  document.getElementById('my-groups-widget').innerHTML = mine.map(g => `
+    <div class="my-group-mini" onclick="openGroupDetail(${g.id})">
+      <div class="mg-icon" style="background:${g.bg}">${g.icon}</div>
+      <div class="mg-info">
+        <div class="mg-name">${g.name}</div>
+        <div class="mg-members">${g.members} membres</div>
+      </div>
+      ${g.id<=3?`<div class="mg-unread">${[3,1,2][g.id-1]||''}</div>`:''}
+    </div>`).join('');
+}
+
+function renderSuggestedWidget() {
+  const sugg = GROUPS.filter(g => !joinedIds.has(g.id)).slice(0,3);
+  document.getElementById('suggested-widget').innerHTML = sugg.map(g => `
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+      <div style="width:36px;height:36px;border-radius:10px;background:${g.bg};display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${g.icon}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g.name}</div>
+        <div style="font-size:11px;color:var(--muted)">${g.members} membres</div>
+      </div>
+      <button style="padding:5px 12px;background:rgba(77,150,255,0.15);border:1px solid rgba(77,150,255,0.3);border-radius:50px;color:#4D96FF;font-size:11px;font-weight:600;cursor:pointer;flex-shrink:0" 
+        onclick="toggleJoin(${g.id},this);this.textContent='✓';this.style.color='#6BCB77';renderSuggestedWidget()">+ Rejoindre</button>
+    </div>`).join('');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display='block';
+  setTimeout(() => t.style.display='none', 2500);
+}
+
+// INIT
+renderGroups(getFilteredGroups('all'));
+renderMyGroupsWidget();
+renderSuggestedWidget();
+</script>
+</body>
+</html>
