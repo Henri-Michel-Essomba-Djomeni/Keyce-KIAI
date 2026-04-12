@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Chat</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="chat-
+container">
+
+    <div class="chat-header">
+        <div class="header-left">
+            <button class="btn-back" id="btnBack">&#8592;</button>
+            <div class="contact-avatar">G</div>
+            <div class="contact-info">
+                <span class="contact-name">Gabrielle</span>
+                <span class="contact-status">en ligne</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="btn-icon" id="btnVoice" title="Appel vocal">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                    <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
+                </svg>
+            </button>
+            <button class="btn-icon" id="btnVideo" title="Appel vidéo">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                    <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+                </svg>
+            </button>
+            <button class="btn-icon" id="btnMenu" title="Plus d'options">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                    <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="chat-body" id="chatBody">
+        <div class="date-separator"><span>Aujourd'hui</span></div>
+
+        <div class="message received">
+            <div class="bubble">
+                <p>Salut ! 👋 Comment tu vas ?</p>
+                <span class="time">09:15</span>
+            </div>
+        </div>
+
+        <div class="message sent">
+            <div class="bubble">
+                <p>Ça va bien merci ! Et toi ?</p>
+                <span class="time">09:17 <span class="ticks">✓✓</span></span>
+            </div>
+        </div>
+
+        <div class="message received">
+            <div class="bubble">
+                <p>Super ! Tu es dispo ce soir ?</p>
+                <span class="time">09:18</span>
+            </div>
+        </div>
+
+        <div class="message sent">
+            <div class="bubble">
+                <p>Oui pourquoi pas 😊</p>
+                <span class="time">09:20 <span class="ticks read">✓✓</span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-footer">
+        <div class="footer-left">
+            <button class="btn-emoji" id="btnEmoji" title="Emoji">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                    <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 14.23A7.042 7.042 0 0112 18.5a6.96 6.96 0 01-4.23-1.27.75.75 0 01.9-1.19A5.47 5.47 0 0012 17a5.45 5.45 0 003.33-1.1c.35-.26.84-.19 1.09.16.26.35.19.84-.19 1.13zM15.5 11c-.83 0-1.5-.67-1.5-1.5S14.67 8 15.5 8s1.5.67 1.5 1.5S16.33 11 15.5 11zm-7 0c-.83 0-1.5-.67-1.5-1.5S7.67 8 8.5 8s1.5.67 1.5 1.5S9.33 11 8.5 11z"/>
+                </svg>
+            </button>
+        </div>
+        <div class="input-wrapper">
+            <input type="text" id="msgInput" placeholder="Message" autocomplete="off"/>
+            <button class="btn-attach" id="btnAttach" title="Joindre">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                    <path d="M16.5 6v11.5a4 4 0 01-8 0V5a2.5 2.5 0 015 0v10.5a1 1 0 01-2 0V6H10v9.5a2.5 2.5 0 005 0V5a4 4 0 00-8 0v12.5a5.5 5.5 0 0011 0V6h-1.5z"/>
+                </svg>
+            </button>
+        </div>
+        <button class="btn-send" id="btnSend" title="Envoyer">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+        </button>
+        <button class="btn-mic" id="btnMic" title="Message vocal">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08a6.994 6.994 0 005.91-5.78c.1-.6-.39-1.14-1-1.14z"/>
+            </svg>
+        </button>
+    </div>
+
+</div>
+
+<div class="call-overlay" id="callOverlay">
+    <div class="call-box">
+        <div class="call-avatar">G</div>
+        <p class="call-name">Gabrielle</p>
+        <p class="call-status" id="callStatus">Appel en cours...</p>
+        <div class="call-actions">
+            <button class="btn-mute" id="btnMute" title="Muet">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                    <path d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02.17c0-.06.02-.11.02-.17V5c0-1.66-1.34-3-3-3S9 3.34 9 5v.18l5.98 5.99zM4.27 3L3 4.27l6.01 6.01V11c0 1.66 1.34 3 3 3 .23 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.31.52-2.76 0-5.3-2.1-5.3-5.1H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c.91-.13 1.77-.45 2.54-.9L19.73 21 21 19.73 4.27 3z"/>
+                </svg>
+            </button>
+            <button class="btn-end-call" id="btnEndCall">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="white">
+                    <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.12-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
+                </svg>
+            </button>
+            <button class="btn-speaker" id="btnSpeaker" title="Haut-parleur">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77 0-4.28-2.99-7.86-7-8.77z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="video-overlay" id="videoOverlay">
+    <div class="video-remote" id="videoRemote">
+        <div class="video-placeholder">
+            <div class="video-avatar">G</div>
+            <p>Gabrielle</p>
+        </div>
+    </div>
+    <div class="video-self" id="videoSelf">
+        <div class="video-self-placeholder">Vous</div>
+    </div>
+    <div class="video-controls">
+        <button class="btn-cam" id="btnCam" title="Caméra">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+            </svg>
+        </button>
+        <button class="btn-end-video" id="btnEndVideo">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="white">
+                <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.12-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
+            </svg>
+        </button>
+        <button class="btn-flip" id="btnFlip" title="Retourner caméra">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                <path d="M9 12c0 1.65 1.35 3 3 3s3-1.35 3-3-1.35-3-3-3-3 1.35-3 3zm12-7h-3.17L16 3H8L6.17 5H3C1.9 5 1 5.9 1 7v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-6 13.5V16h-6v2.5L5.5 15 9 11.5V14h6v-2.5l3.5 3.5-3.5 3.5z"/>
+            </svg>
+        </button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
