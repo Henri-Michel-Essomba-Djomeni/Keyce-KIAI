@@ -11,6 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const feedback    = document.getElementById('feedback-message');
     const feedbackMsg = document.getElementById('feedback-text');
     const feedbackIcon = document.getElementById('feedback-icon-svg');
+    const memberSearch = document.getElementById('member-search');
+    const groupSearch  = document.getElementById('group-search');
+
+    // États de l'application
+    let allMembers = [];
+    let allGroups = [];
 
     // Champs du formulaire
     const fields = {
@@ -261,25 +267,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
 
             if (result.success) {
-                if (result.membres.length === 0) {
-                    membersList.innerHTML = '<p class="no-members">Aucun membre enregistré pour le moment.</p>';
-                } else {
-                    membersList.innerHTML = result.membres.map(membre => `
-                        <div class="member-item" data-id="${membre.id}">
-                            <input type="checkbox" class="member-checkbox" data-id="${membre.id}">
-                            <div class="member-info">
-                                <h3>${membre.nom} ${membre.prenom}</h3>
-                                <p>${membre.telephone}</p>
-                            </div>
-                            <div class="member-date">
-                                ${new Date(membre.date_creation).toLocaleDateString('fr-FR')}
-                            </div>
-                        </div>
-                    `).join('');
-
-                    // Ajouter les événements de sélection
-                    attachSelectionEvents();
-                }
+                allMembers = result.membres;
+                renderMembers(allMembers);
             } else {
                 membersList.innerHTML = '<p class="no-members">Erreur lors du chargement des membres.</p>';
             }
@@ -291,6 +280,50 @@ document.addEventListener('DOMContentLoaded', () => {
             refreshBtn.disabled = false;
             refreshBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Actualiser';
         }
+    }
+
+    /**
+     * Affiche une liste de membres
+     * @param {Array} membersToRender 
+     */
+    function renderMembers(membersToRender) {
+        const membersList = document.getElementById('members-list');
+        
+        if (membersToRender.length === 0) {
+            const isSearching = memberSearch.value.trim() !== '';
+            membersList.innerHTML = isSearching 
+                ? '<div class="no-results"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg><p>Aucun membre ne correspond à votre recherche.</p></div>'
+                : '<p class="no-members">Aucun membre enregistré pour le moment.</p>';
+            return;
+        }
+
+        membersList.innerHTML = membersToRender.map(membre => `
+            <div class="member-item ${selectedIds.has(parseInt(membre.id)) ? 'selected' : ''}" data-id="${membre.id}">
+                <input type="checkbox" class="member-checkbox" data-id="${membre.id}" ${selectedIds.has(parseInt(membre.id)) ? 'checked' : ''}>
+                <div class="member-info">
+                    <h3>${membre.nom} ${membre.prenom}</h3>
+                    <p>${membre.telephone}</p>
+                </div>
+                <div class="member-date">
+                    ${new Date(membre.date_creation).toLocaleDateString('fr-FR')}
+                </div>
+            </div>
+        `).join('');
+
+        attachSelectionEvents();
+    }
+
+    /**
+     * Filtre les membres en fonction de la recherche
+     */
+    function filterMembers() {
+        const query = memberSearch.value.toLowerCase().trim();
+        const filtered = allMembers.filter(m => 
+            m.nom.toLowerCase().includes(query) || 
+            m.prenom.toLowerCase().includes(query) || 
+            m.telephone.includes(query)
+        );
+        renderMembers(filtered);
     }
 
     // =========================================================
@@ -447,6 +480,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const groupForm = document.getElementById('create-group-form');
     const createGroupBtn = document.getElementById('create-group-btn');
     const closeModalBtn = document.getElementById('close-modal');
+    const DELETE_GROUPS_URL = '/Keyce-KIAI/delete_groups.php';
+
+    let groupSelectionMode = false;
+    let selectedGroupIds = new Set();
+
+    /**
+     * Active/désactive le mode sélection pour les groupes
+     */
+    function toggleGroupSelectionMode() {
+        groupSelectionMode = !groupSelectionMode;
+        const groupsList = document.getElementById('groups-list');
+        const selectionActionsGroups = document.getElementById('selection-actions-groups');
+        const selectGroupsBtn = document.getElementById('select-groups-btn');
+        const selectGroupsBtnText = document.getElementById('select-groups-btn-text');
+
+        if (groupSelectionMode) {
+            groupsList.classList.add('selection-mode');
+            selectGroupsBtn.classList.add('active');
+            selectGroupsBtnText.textContent = 'Annuler';
+            selectionActionsGroups.style.display = 'flex';
+            renderGroups(allGroups); // Re-render to show checkboxes
+        } else {
+            groupsList.classList.remove('selection-mode');
+            selectGroupsBtn.classList.remove('active');
+            selectGroupsBtnText.textContent = 'Sélectionner';
+            selectionActionsGroups.style.display = 'none';
+            selectedGroupIds.clear();
+            renderGroups(allGroups); // Re-render to hide checkboxes
+        }
+    }
 
     /**
      * Charge et affiche les groupes
@@ -463,27 +526,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
 
             if (result.success) {
-                if (result.groupes.length === 0) {
-                    groupsList.innerHTML = '<p class="no-members">Aucun groupe créé pour le moment.</p>';
-                } else {
-                    groupsList.innerHTML = result.groupes.map(group => `
-                        <div class="group-item">
-                            <div class="group-info">
-                                <h3>${group.nom}</h3>
-                                <p>${group.description || 'Pas de description'}</p>
-                            </div>
-                            <div class="group-meta">
-                                <span class="member-count">
-                                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m5-1.13a4 4 0 100-8 4 4 0 000 8zm6 0a4 4 0 100-8"/>
-                                    </svg>
-                                    ${group.nombre_membres} membre(s)
-                                </span>
-                                <span>Créé le ${new Date(group.date_creation).toLocaleDateString('fr-FR')}</span>
-                            </div>
-                        </div>
-                    `).join('');
-                }
+                allGroups = result.groupes;
+                renderGroups(allGroups);
             }
         } catch (error) {
             console.error('Erreur de chargement des groupes:', error);
@@ -491,6 +535,146 @@ document.addEventListener('DOMContentLoaded', () => {
         } finally {
             if (refreshGroupsBtn) refreshGroupsBtn.disabled = false;
         }
+    }
+
+    /**
+     * Affiche une liste de groupes
+     * @param {Array} groupsToRender 
+     */
+    function renderGroups(groupsToRender) {
+        const groupsList = document.getElementById('groups-list');
+
+        if (groupsToRender.length === 0) {
+            const isSearching = groupSearch.value.trim() !== '';
+            groupsList.innerHTML = isSearching
+                ? '<div class="no-results"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg><p>Aucun groupe ne correspond à votre recherche.</p></div>'
+                : '<p class="no-members">Aucun groupe créé pour le moment.</p>';
+            return;
+        }
+
+        groupsList.innerHTML = groupsToRender.map(group => `
+            <div class="group-item ${selectedGroupIds.has(parseInt(group.id)) ? 'selected' : ''}" data-id="${group.id}">
+                ${groupSelectionMode ? `<input type="checkbox" class="group-checkbox" data-id="${group.id}" ${selectedGroupIds.has(parseInt(group.id)) ? 'checked' : ''}>` : ''}
+                <div class="group-info">
+                    <h3>${group.nom}</h3>
+                    <p>${group.description || 'Pas de description'}</p>
+                </div>
+                <div class="group-meta">
+                    <span class="member-count">
+                        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m5-1.13a4 4 0 100-8 4 4 0 000 8zm6 0a4 4 0 100-8"/>
+                        </svg>
+                        ${group.nombre_membres} membre(s)
+                    </span>
+                    <span>Créé le ${new Date(group.date_creation).toLocaleDateString('fr-FR')}</span>
+                </div>
+            </div>
+        `).join('');
+
+        if (groupSelectionMode) {
+            attachGroupSelectionEvents();
+        }
+    }
+
+    /**
+     * Attache les événements de clic sur chaque groupe pour la sélection
+     */
+    function attachGroupSelectionEvents() {
+        const groupItems = document.querySelectorAll('.group-item');
+
+        groupItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                if (!groupSelectionMode) return;
+                
+                // Si on a cliqué sur la checkbox, e.stopPropagation() dans son propre handler gérera ça
+                const checkbox = item.querySelector('.group-checkbox');
+                if (e.target.type === 'checkbox') return;
+
+                const id = parseInt(item.dataset.id);
+                if (selectedGroupIds.has(id)) {
+                    selectedGroupIds.delete(id);
+                    item.classList.remove('selected');
+                    checkbox.checked = false;
+                } else {
+                    selectedGroupIds.add(id);
+                    item.classList.add('selected');
+                    checkbox.checked = true;
+                }
+            });
+
+            const checkbox = item.querySelector('.group-checkbox');
+            if (checkbox) {
+                checkbox.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = parseInt(item.dataset.id);
+                    if (checkbox.checked) {
+                        selectedGroupIds.add(id);
+                        item.classList.add('selected');
+                    } else {
+                        selectedGroupIds.delete(id);
+                        item.classList.remove('selected');
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * Supprime les groupes sélectionnés
+     */
+    async function deleteSelectedGroups() {
+        if (selectedGroupIds.size === 0) {
+            showFeedback('error', 'Veuillez sélectionner au moins un groupe à supprimer.');
+            return;
+        }
+
+        const count = selectedGroupIds.size;
+        const confirmation = confirm(
+            `Êtes-vous sûr de vouloir supprimer ${count} groupe(s) ?\n\nLes membres resteront enregistrés mais ne feront plus partie de ces groupes.`
+        );
+
+        if (!confirmation) return;
+
+        const deleteBtn = document.getElementById('delete-groups-btn');
+        deleteBtn.disabled = true;
+        deleteBtn.innerHTML = '<span class="spinner" style="display:block;width:20px;height:20px;border:2.5px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;"></span> Suppression...';
+
+        try {
+            const response = await fetch(DELETE_GROUPS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ids: Array.from(selectedGroupIds) })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showFeedback('success', result.message);
+                groupSelectionMode = true; // force toggle off
+                toggleGroupSelectionMode();
+                loadGroups();
+            } else {
+                showFeedback('error', result.message || 'Erreur lors de la suppression.');
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            showFeedback('error', 'Impossible de contacter le serveur.');
+        } finally {
+            deleteBtn.disabled = false;
+            deleteBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg> Supprimer les groupes';
+        }
+    }
+
+    /**
+     * Filtre les groupes en fonction de la recherche
+     */
+    function filterGroups() {
+        const query = groupSearch.value.toLowerCase().trim();
+        const filtered = allGroups.filter(g => 
+            g.nom.toLowerCase().includes(query) || 
+            (g.description && g.description.toLowerCase().includes(query))
+        );
+        renderGroups(filtered);
     }
 
     /**
@@ -580,6 +764,12 @@ document.addEventListener('DOMContentLoaded', () => {
     createGroupBtn.addEventListener('click', openCreateGroupModal);
     closeModalBtn.addEventListener('click', closeCreateGroupModal);
     document.getElementById('refresh-groups-btn').addEventListener('click', loadGroups);
+    document.getElementById('select-groups-btn').addEventListener('click', toggleGroupSelectionMode);
+    document.getElementById('delete-groups-btn').addEventListener('click', deleteSelectedGroups);
+
+    // Événements de recherche
+    memberSearch.addEventListener('input', filterMembers);
+    groupSearch.addEventListener('input', filterGroups);
 
     // Initialisation
     loadGroups();

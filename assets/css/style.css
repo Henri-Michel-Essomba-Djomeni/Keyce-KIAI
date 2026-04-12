@@ -805,3 +805,102 @@ body::before {
     border-color: var(--border-focus);
     background: rgba(255, 255, 255, 0.1);
 }
+/* --- Headers and Search --- */
+.members-header, .groups-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.header-group {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex: 1;
+    min-width: 280px;
+}
+
+.search-container {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+}
+
+.search-input {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1.5px solid var(--border-subtle);
+    border-radius: var(--radius-full);
+    padding: 0.6rem 1rem 0.6rem 2.8rem;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    transition: all 0.2s var(--ease-out);
+    outline: none;
+}
+
+.search-input:focus {
+    border-color: var(--border-focus);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+.search-input::placeholder {
+    color: var(--text-muted);
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.2rem;
+    height: 1.2rem;
+    color: var(--text-muted);
+    pointer-events: none;
+    transition: color 0.2s ease;
+}
+
+.search-input:focus + .search-icon {
+    color: var(--primary-400);
+}
+
+/* --- No results state --- */
+.no-results {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-secondary);
+}
+
+.no-results svg {
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.2;
+}
+/* --- Group Selection Mode --- */
+.group-checkbox {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    accent-color: var(--primary-500);
+    cursor: pointer;
+    margin-right: 1.25rem;
+}
+
+.groups-list.selection-mode .group-item {
+    cursor: pointer;
+}
+
+.group-item.selected {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: var(--primary-500);
+}
+
+.groups-header-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
