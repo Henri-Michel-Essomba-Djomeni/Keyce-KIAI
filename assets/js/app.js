@@ -238,6 +238,10 @@ document.addEventListener('DOMContentLoaded', () => {
     //  CHARGEMENT DES MEMBRES
     // =========================================================
 
+    const DELETE_MEMBRES_URL = '/Keyce-KIAI/delete_membres.php';
+    let selectionMode = false;
+    let selectedIds = new Set();
+
     /**
      * Charge et affiche la liste des membres
      */
@@ -259,7 +263,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     membersList.innerHTML = '<p class="no-members">Aucun membre enregistré pour le moment.</p>';
                 } else {
                     membersList.innerHTML = result.membres.map(membre => `
-                        <div class="member-item">
+                        <div class="member-item" data-id="${membre.id}">
+                            <input type="checkbox" class="member-checkbox" data-id="${membre.id}">
                             <div class="member-info">
                                 <h3>${membre.nom} ${membre.prenom}</h3>
                                 <p>${membre.telephone}</p>
@@ -269,6 +274,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                         </div>
                     `).join('');
+
+                    // Ajouter les événements de sélection
+                    attachSelectionEvents();
                 }
             } else {
                 membersList.innerHTML = '<p class="no-members">Erreur lors du chargement des membres.</p>';
@@ -283,10 +291,151 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // =========================================================
+    //  MODE SÉLECTION
+    // =========================================================
+
+    /**
+     * Active/désactive le mode sélection
+     */
+    function toggleSelectionMode() {
+        selectionMode = !selectionMode;
+        const membersList = document.getElementById('members-list');
+        const deleteBtn = document.getElementById('delete-btn');
+        const selectBtn = document.getElementById('select-btn');
+        const selectBtnText = document.getElementById('select-btn-text');
+
+        if (selectionMode) {
+            membersList.classList.add('selection-mode');
+            selectBtn.classList.add('active');
+            selectBtnText.textContent = 'Annuler';
+            deleteBtn.style.display = 'flex';
+        } else {
+            membersList.classList.remove('selection-mode');
+            selectBtn.classList.remove('active');
+            selectBtnText.textContent = 'Sélectionner';
+            deleteBtn.style.display = 'none';
+            // Désélectionner tout
+            selectedIds.clear();
+            document.querySelectorAll('.member-item.selected').forEach(item => {
+                item.classList.remove('selected');
+            });
+            document.querySelectorAll('.member-checkbox').forEach(cb => {
+                cb.checked = false;
+            });
+        }
+    }
+
+    /**
+     * Attache les événements de clic sur chaque membre pour la sélection
+     */
+    function attachSelectionEvents() {
+        const memberItems = document.querySelectorAll('.member-item');
+
+        memberItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                if (!selectionMode) return;
+
+                const checkbox = item.querySelector('.member-checkbox');
+                const id = parseInt(item.dataset.id);
+
+                // Toggle la sélection
+                if (selectedIds.has(id)) {
+                    selectedIds.delete(id);
+                    item.classList.remove('selected');
+                    checkbox.checked = false;
+                } else {
+                    selectedIds.add(id);
+                    item.classList.add('selected');
+                    checkbox.checked = true;
+                }
+            });
+
+            // Empêcher le double-toggle quand on clique directement sur la checkbox
+            const checkbox = item.querySelector('.member-checkbox');
+            checkbox.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = parseInt(item.dataset.id);
+
+                if (checkbox.checked) {
+                    selectedIds.add(id);
+                    item.classList.add('selected');
+                } else {
+                    selectedIds.delete(id);
+                    item.classList.remove('selected');
+                }
+            });
+        });
+    }
+
+    // =========================================================
+    //  SUPPRESSION DES MEMBRES
+    // =========================================================
+
+    /**
+     * Supprime les membres sélectionnés
+     */
+    async function deleteSelectedMembers() {
+        if (selectedIds.size === 0) {
+            showFeedback('error', 'Veuillez sélectionner au moins un membre à supprimer.');
+            return;
+        }
+
+        const count = selectedIds.size;
+        const confirmation = confirm(
+            `Êtes-vous sûr de vouloir supprimer ${count} membre(s) ?\n\nCette action est irréversible.`
+        );
+
+        if (!confirmation) return;
+
+        const deleteBtn = document.getElementById('delete-btn');
+        deleteBtn.disabled = true;
+        deleteBtn.innerHTML = '<span class="spinner" style="display:block;width:20px;height:20px;border:2.5px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;"></span> Suppression...';
+
+        try {
+            const response = await fetch(DELETE_MEMBRES_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ids: Array.from(selectedIds) })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showFeedback('success', result.message);
+                // Quitter le mode sélection et recharger
+                selectionMode = true; // force toggleSelectionMode to turn it off
+                toggleSelectionMode();
+                loadMembers();
+            } else {
+                showFeedback('error', result.message || 'Erreur lors de la suppression.');
+            }
+        } catch (error) {
+            console.error('Erreur de suppression:', error);
+            showFeedback('error', 'Impossible de contacter le serveur.');
+        } finally {
+            deleteBtn.disabled = false;
+            deleteBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg> Supprimer les membres sélectionnés';
+        }
+    }
+
+    // =========================================================
+    //  INITIALISATION
+    // =========================================================
+
     // Charger les membres au chargement de la page
     loadMembers();
 
     // Bouton d'actualisation
     document.getElementById('refresh-btn').addEventListener('click', loadMembers);
 
+    // Bouton de sélection
+    document.getElementById('select-btn').addEventListener('click', toggleSelectionMode);
+
+    // Bouton de suppression
+    document.getElementById('delete-btn').addEventListener('click', deleteSelectedMembers);
+
 });
+
