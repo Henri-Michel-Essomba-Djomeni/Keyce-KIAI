@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>KIAI - Keyce</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#0a0a0f;
+  --card:rgba(255,255,255,0.06);
+  --text:#fff;
+  --neon:#00f7ff;
+  --accent:#ff00c8;
+}
+
+body.light{
+  --bg:#f5f5f5;
+  --card:rgba(0,0,0,0.05);
+  --text:#111;
+  --neon:#0077ff;
+  --accent:#ff4d6d;
+}
+
+body{
+  margin:0;
+  font-family:Poppins,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* ================= AUTH ================= */
+.auth{
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.card{
+  width:90%;
+  max-width:400px;
+  background:var(--card);
+  padding:25px;
+  border-radius:20px;
+  backdrop-filter:blur(15px);
+  text-align:center;
+}
+
+.card h1{
+  font-family:Montserrat;
+  color:var(--neon);
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border-radius:10px;
+  border:1px solid var(--neon);
+  background:transparent;
+  color:var(--text);
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:var(--accent);
+  color:white;
+  cursor:pointer;
+  margin-top:10px;
+}
+
+.switch{
+  margin-top:10px;
+  font-size:13px;
+  cursor:pointer;
+  color:var(--neon);
+}
+
+/* ================= APP ================= */
+.app{
+  display:none;
+}
+
+/* TOPBAR */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  padding:12px 15px;
+  background:var(--card);
+  backdrop-filter:blur(12px);
+}
+
+.logo{
+  font-family:Montserrat;
+  font-weight:700;
+  color:var(--neon);
+}
+
+.icons span{
+  margin-left:10px;
+  cursor:pointer;
+}
+
+/* FEED */
+.post{
+  background:var(--card);
+  margin:15px;
+  border-radius:15px;
+  overflow:hidden;
+}
+
+.post img{
+  width:100%;
+}
+
+.actions{
+  display:flex;
+  justify-content:space-between;
+  padding:10px;
+}
+
+/* NAV */
+.nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  display:flex;
+  justify-content:space-around;
+  padding:12px;
+  background:var(--card);
+}
+
+/* PROFILE */
+.profile{
+  display:none;
+  padding:20px;
+}
+
+.profile-card{
+  background:var(--card);
+  padding:20px;
+  border-radius:20px;
+  text-align:center;
+}
+
+.profile-card img{
+  width:100px;
+  border-radius:50%;
+  border:3px solid var(--neon);
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= LOGIN ================= -->
+<div class="auth" id="loginBox">
+  <div class="card">
+    <h1>KIAI Login</h1>
+    <input placeholder="Email">
+    <input type="password" placeholder="Mot de passe">
+    <button onclick="login()">Se connecter</button>
+    <div class="switch" onclick="showSignup()">Créer un compte</div>
+  </div>
+</div>
+
+<!-- ================= SIGNUP ================= -->
+<div class="auth" id="signupBox" style="display:none;">
+  <div class="card">
+    <h1>Créer un compte</h1>
+    <input placeholder="Nom complet">
+    <input placeholder="Email">
+    <input type="password" placeholder="Mot de passe">
+    <button onclick="signup()">S’inscrire</button>
+    <div class="switch" onclick="showLogin()">Déjà un compte ? Login</div>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div class="app" id="app">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="logo">KIAI - Keyce</div>
+    <div class="icons">
+      <span onclick="toggleDark()">🌙</span>
+      <span onclick="logout()">🚪</span>
+    </div>
+  </div>
+
+  <!-- FEED -->
+  <div class="post">
+    <img src="https://picsum.photos/600/400">
+    <div class="actions">
+      <span>❤️</span>
+      <span>💬</span>
+      <span>📤</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- PROFILE -->
+<div class="profile" id="profile">
+  <div class="profile-card">
+    <img src="https://i.pravatar.cc/100">
+    <h2>@user</h2>
+    <p>Profil KIAI</p>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <span onclick="showApp()">🏠</span>
+  <span onclick="showProfile()">👤</span>
+</div>
+
+<script>
+
+/* LOGIN */
+function login(){
+  document.getElementById("loginBox").style.display="none";
+  document.getElementById("signupBox").style.display="none";
+  document.getElementById("app").style.display="block";
+}
+
+/* SIGNUP */
+function signup(){
+  alert("Compte créé (simulation)");
+  showLogin();
+}
+
+/* SWITCH AUTH */
+function showSignup(){
+  document.getElementById("loginBox").style.display="none";
+  document.getElementById("signupBox").style.display="flex";
+}
+
+function showLogin(){
+  document.getElementById("signupBox").style.display="none";
+  document.getElementById("loginBox").style.display="flex";
+}
+
+/* LOGOUT */
+function logout(){
+  document.getElementById("app").style.display="none";
+  document.getElementById("profile").style.display="none";
+  document.getElementById("loginBox").style.display="flex";
+}
+
+/* PROFILE */
+function showProfile(){
+  document.getElementById("app").style.display="none";
+  document.getElementById("profile").style.display="block";
+}
+
+/* APP */
+function showApp(){
+  document.getElementById("profile").style.display="none";
+  document.getElementById("app").style.display="block";
+}
+
+/* DARK MODE */
+function toggleDark(){
+  document.body.classList.toggle("light");
+}
+
+</script>
+
+</body>
+</html>
