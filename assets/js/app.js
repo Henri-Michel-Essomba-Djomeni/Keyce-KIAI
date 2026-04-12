@@ -25,6 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const PHONE_REGEX = /^\+?[0-9]{8,15}$/;
     const API_URL = '/Keyce-KIAI/insert_membre.php';
     const GET_MEMBRES_URL = '/Keyce-KIAI/get_membres.php';
+    const CREATE_GROUP_URL = '/Keyce-KIAI/create_group.php';
+    const GET_GROUPS_URL = '/Keyce-KIAI/get_groups.php';
 
     // =========================================================
     //  VALIDATION
@@ -301,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function toggleSelectionMode() {
         selectionMode = !selectionMode;
         const membersList = document.getElementById('members-list');
-        const deleteBtn = document.getElementById('delete-btn');
+        const selectionActions = document.getElementById('selection-actions');
         const selectBtn = document.getElementById('select-btn');
         const selectBtnText = document.getElementById('select-btn-text');
 
@@ -309,12 +311,12 @@ document.addEventListener('DOMContentLoaded', () => {
             membersList.classList.add('selection-mode');
             selectBtn.classList.add('active');
             selectBtnText.textContent = 'Annuler';
-            deleteBtn.style.display = 'flex';
+            selectionActions.style.display = 'flex';
         } else {
             membersList.classList.remove('selection-mode');
             selectBtn.classList.remove('active');
             selectBtnText.textContent = 'Sélectionner';
-            deleteBtn.style.display = 'none';
+            selectionActions.style.display = 'none';
             // Désélectionner tout
             selectedIds.clear();
             document.querySelectorAll('.member-item.selected').forEach(item => {
@@ -436,6 +438,151 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Bouton de suppression
     document.getElementById('delete-btn').addEventListener('click', deleteSelectedMembers);
+
+    // =========================================================
+    //  LOGIQUE DES GROUPES
+    // =========================================================
+
+    const groupModal = document.getElementById('create-group-modal');
+    const groupForm = document.getElementById('create-group-form');
+    const createGroupBtn = document.getElementById('create-group-btn');
+    const closeModalBtn = document.getElementById('close-modal');
+
+    /**
+     * Charge et affiche les groupes
+     */
+    async function loadGroups() {
+        const groupsList = document.getElementById('groups-list');
+        const refreshGroupsBtn = document.getElementById('refresh-groups-btn');
+
+        groupsList.innerHTML = '<p class="no-members">Chargement des groupes...</p>';
+        if (refreshGroupsBtn) refreshGroupsBtn.disabled = true;
+
+        try {
+            const response = await fetch(GET_GROUPS_URL);
+            const result = await response.json();
+
+            if (result.success) {
+                if (result.groupes.length === 0) {
+                    groupsList.innerHTML = '<p class="no-members">Aucun groupe créé pour le moment.</p>';
+                } else {
+                    groupsList.innerHTML = result.groupes.map(group => `
+                        <div class="group-item">
+                            <div class="group-info">
+                                <h3>${group.nom}</h3>
+                                <p>${group.description || 'Pas de description'}</p>
+                            </div>
+                            <div class="group-meta">
+                                <span class="member-count">
+                                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m5-1.13a4 4 0 100-8 4 4 0 000 8zm6 0a4 4 0 100-8"/>
+                                    </svg>
+                                    ${group.nombre_membres} membre(s)
+                                </span>
+                                <span>Créé le ${new Date(group.date_creation).toLocaleDateString('fr-FR')}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+        } catch (error) {
+            console.error('Erreur de chargement des groupes:', error);
+            groupsList.innerHTML = '<p class="no-members">Erreur lors du chargement des groupes.</p>';
+        } finally {
+            if (refreshGroupsBtn) refreshGroupsBtn.disabled = false;
+        }
+    }
+
+    /**
+     * Ouvre la modale de création de groupe
+     */
+    function openCreateGroupModal() {
+        if (selectedIds.size === 0) {
+            showFeedback('error', 'Veuillez sélectionner au moins un membre pour créer un groupe.');
+            return;
+        }
+
+        const selectedCount = document.getElementById('selected-count');
+        const previewList = document.getElementById('selected-members-preview');
+
+        selectedCount.textContent = selectedIds.size;
+
+        // Récupérer les noms des membres sélectionnés depuis le DOM
+        const selectedMembers = Array.from(selectedIds).map(id => {
+            const item = document.querySelector(`.member-item[data-id="${id}"]`);
+            return item ? item.querySelector('h3').textContent : 'Membre inconnu';
+        });
+
+        previewList.innerHTML = selectedMembers.map(name => `
+            <span class="member-tag">${name}</span>
+        `).join('');
+
+        groupModal.classList.add('is-active');
+    }
+
+    /**
+     * Ferme la modale
+     */
+    function closeCreateGroupModal() {
+        groupModal.classList.remove('is-active');
+        groupForm.reset();
+    }
+
+    /**
+     * Soumission du formulaire de création de groupe
+     */
+    groupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const submitBtn = groupForm.querySelector('button[type="submit"]');
+        const nom = document.getElementById('group-nom').value.trim();
+        const description = document.getElementById('group-description').value.trim();
+
+        if (!nom) return;
+
+        submitBtn.classList.add('is-loading');
+        submitBtn.disabled = true;
+
+        try {
+            const response = await fetch(CREATE_GROUP_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nom,
+                    description,
+                    membre_ids: Array.from(selectedIds)
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showFeedback('success', result.message);
+                closeCreateGroupModal();
+                // Désactiver le mode sélection
+                selectionMode = true; 
+                toggleSelectionMode();
+                // Recharger les groupes
+                loadGroups();
+            } else {
+                showFeedback('error', result.message || 'Erreur lors de la création du groupe.');
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            showFeedback('error', 'Impossible de contacter le serveur.');
+        } finally {
+            submitBtn.classList.remove('is-loading');
+            submitBtn.disabled = false;
+        }
+    });
+
+    // Événements
+    createGroupBtn.addEventListener('click', openCreateGroupModal);
+    closeModalBtn.addEventListener('click', closeCreateGroupModal);
+    document.getElementById('refresh-groups-btn').addEventListener('click', loadGroups);
+
+    // Initialisation
+    loadGroups();
 
 });
 
