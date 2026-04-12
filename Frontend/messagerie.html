@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyce KIAI — Messagerie</title>
+  <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --c1:#FF6B6B; --c3:#6BCB77; --c4:#4D96FF; --c5:#C77DFF;
+      --grad-main:linear-gradient(135deg,#FF6B6B 0%,#C77DFF 50%,#4D96FF 100%);
+      --grad-btn:linear-gradient(135deg,#6B3FFF,#C77DFF);
+      --dark:#0D0D1A; --card:#191930; --card2:#1e1e3a;
+      --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.04);
+      --muted:rgba(255,255,255,0.45); --input-bg:rgba(255,255,255,0.06);
+    }
+    html,body { height:100%; background:var(--dark); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:14px; overflow:hidden; }
+
+    /* NAVBAR */
+    .navbar { position:fixed; top:0; left:0; right:0; z-index:100; height:60px; background:rgba(13,13,26,0.92); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 1.5rem; gap:1rem; }
+    .nav-logo { display:flex; align-items:center; gap:8px; text-decoration:none; }
+    .nav-logo-icon { width:32px; height:32px; background:var(--grad-main); border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'Clash Display',sans-serif; font-size:16px; font-weight:700; }
+    .nav-logo-txt { font-family:'Clash Display',sans-serif; font-size:18px; font-weight:700; background:var(--grad-main); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .nav-title { flex:1; text-align:center; font-family:'Clash Display',sans-serif; font-size:15px; font-weight:600; color:var(--muted); }
+    .nav-actions { display:flex; align-items:center; gap:8px; }
+    .nav-icon-btn { width:36px; height:36px; background:var(--input-bg); border:1px solid var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; position:relative; }
+    .notif-badge { position:absolute; top:-2px; right:-2px; width:16px; height:16px; background:var(--c1); border-radius:50%; font-size:9px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+    .nav-avatar { width:36px; height:36px; background:var(--grad-main); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; cursor:pointer; }
+
+    /* MESSENGER LAYOUT */
+    .messenger { display:grid; grid-template-columns:68px 300px 1fr; height:calc(100vh - 60px); margin-top:60px; }
+
+    /* ICON SIDEBAR */
+    .icon-sb { background:rgba(13,13,26,0.7); border-right:1px solid var(--border); display:flex; flex-direction:column; align-items:center; padding:10px 0; gap:2px; }
+    .isb-btn { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; cursor:pointer; color:var(--muted); transition:all 0.2s; text-decoration:none; position:relative; }
+    .isb-btn:hover { background:rgba(255,255,255,0.06); color:#fff; }
+    .isb-btn.active { background:rgba(199,125,255,0.15); color:#C77DFF; }
+    .isb-btn .ibadge { position:absolute; top:3px; right:3px; width:14px; height:14px; background:var(--c1); border-radius:50%; font-size:8px; font-weight:700; display:flex; align-items:center; justify-content:center; border:2px solid var(--dark); }
+    .isb-div { width:28px; height:1px; background:var(--border); margin:6px 0; }
+    .isb-space { flex:1; }
+
+    /* CONVERSATIONS PANEL */
+    .conv-panel { background:var(--card); border-right:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; }
+    .conv-top { padding:14px 14px 10px; flex-shrink:0; }
+    .conv-top-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+    .conv-title { font-family:'Clash Display',sans-serif; font-size:17px; font-weight:700; }
+    .btn-new-msg { width:32px; height:32px; background:var(--grad-btn); border:none; border-radius:50%; cursor:pointer; font-size:17px; display:flex; align-items:center; justify-content:center; color:#fff; box-shadow:0 2px 10px rgba(107,63,255,0.35); transition:transform 0.18s; }
+    .btn-new-msg:hover { transform:scale(1.1); }
+    .conv-search-wrap { position:relative; }
+    .conv-search-wrap input { width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:10px; padding:8px 10px 8px 32px; color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; outline:none; transition:border-color 0.2s; }
+    .conv-search-wrap input:focus { border-color:rgba(199,125,255,0.4); }
+    .conv-search-wrap input::placeholder { color:var(--muted); }
+    .conv-search-icon { position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:13px; }
+    .conv-filters { display:flex; gap:3px; padding:0 10px 10px; flex-shrink:0; }
+    .conv-filt { flex:1; padding:6px 4px; background:none; border:none; border-radius:8px; color:var(--muted); font-family:'Plus Jakarta Sans',sans-serif; font-size:12px; font-weight:500; cursor:pointer; transition:all 0.2s; text-align:center; }
+    .conv-filt:hover { background:rgba(255,255,255,0.05); color:#fff; }
+    .conv-filt.active { background:rgba(199,125,255,0.12); color:#C77DFF; }
+    .conv-list { flex:1; overflow-y:auto; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,0.08) transparent; }
+    .conv-list::-webkit-scrollbar { width:3px; }
+    .conv-list::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:2px; }
+
+    /* Conv item */
+    .cv { display:flex; align-items:center; gap:10px; padding:11px 14px; cursor:pointer; transition:background 0.15s; border-bottom:1px solid var(--border2); position:relative; }
+    .cv:hover { background:rgba(255,255,255,0.025); }
+    .cv.active { background:rgba(199,125,255,0.07); }
+    .cv-av-wrap { position:relative; flex-shrink:0; }
+    .cv-av { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; }
+    .cv-av.grp { border-radius:12px; }
+    .cv-dot { position:absolute; bottom:1px; right:1px; width:10px; height:10px; background:var(--c3); border-radius:50%; border:2px solid var(--card); }
+    .cv-body { flex:1; min-width:0; }
+    .cv-row1 { display:flex; align-items:baseline; justify-content:space-between; gap:6px; margin-bottom:2px; }
+    .cv-name { font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .cv-time { font-size:11px; color:var(--muted); flex-shrink:0; }
+    .cv-last { font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .cv.unread .cv-last { color:rgba(255,255,255,0.75); font-weight:500; }
+    .cv-ubadge { position:absolute; right:12px; bottom:13px; min-width:18px; height:18px; background:var(--c5); border-radius:9px; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; padding:0 5px; }
+
+    /* CHAT AREA */
+    .chat-area { display:flex; flex-direction:column; background:var(--dark); overflow:hidden; }
+
+    /* Empty state */
+    .chat-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; color:var(--muted); }
+    .chat-empty-icon { font-size:52px; opacity:0.35; }
+    .chat-empty-title { font-family:'Clash Display',sans-serif; font-size:20px; color:rgba(255,255,255,0.45); }
+    .chat-empty-desc { font-size:13px; text-align:center; max-width:260px; line-height:1.65; }
+    .chat-empty-cta { padding:10px 24px; background:var(--grad-btn); border:none; border-radius:50px; color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; box-shadow:0 4px 14px rgba(107,63,255,0.3); }
+
+    /* Chat header */
+    .chat-hdr { display:flex; align-items:center; gap:12px; padding:0 18px; height:62px; flex-shrink:0; background:rgba(19,19,48,0.85); border-bottom:1px solid var(--border); backdrop-filter:blur(10px); }
+    .ch-av { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; flex-shrink:0; position:relative; }
+    .ch-av.grp { border-radius:12px; }
+    .ch-dot { position:absolute; bottom:0; right:0; width:10px; height:10px; background:var(--c3); border-radius:50%; border:2px solid var(--card); }
+    .ch-info { flex:1; min-width:0; }
+    .ch-name { font-weight:700; font-size:15px; }
+    .ch-status { font-size:12px; margin-top:1px; }
+    .ch-status.online { color:var(--c3); }
+    .ch-status.offline { color:var(--muted); }
+    .ch-actions { display:flex; gap:6px; }
+    .ch-btn { width:34px; height:34px; background:var(--input-bg); border:1px solid var(--border); border-radius:9px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:15px; color:var(--muted); transition:all 0.2s; }
+    .ch-btn:hover { background:rgba(255,255,255,0.1); color:#fff; }
+
+    /* Messages */
+    .chat-msgs { flex:1; overflow-y:auto; padding:18px 20px; display:flex; flex-direction:column; gap:2px; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,0.08) transparent; }
+    .chat-msgs::-webkit-scrollbar { width:3px; }
+    .chat-msgs::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:2px; }
+
+    .date-pill { text-align:center; margin:10px 0; }
+    .date-pill span { font-size:11px; color:var(--muted); background:rgba(255,255,255,0.05); padding:3px 12px; border-radius:50px; }
+
+    .msg-row { display:flex; gap:7px; align-items:flex-end; margin-bottom:1px; }
+    .msg-row.mine { flex-direction:row-reverse; }
+    .ma { width:26px; height:26px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; }
+    .ma.hidden { visibility:hidden; }
+    .mb { max-width:66%; padding:9px 13px; border-radius:18px; font-size:14px; line-height:1.55; animation:popIn 0.22s ease; }
+    @keyframes popIn { from{opacity:0;transform:scale(0.9) translateY(4px);}to{opacity:1;transform:scale(1) translateY(0);} }
+    .mb.them { background:var(--card2); border-bottom-left-radius:4px; color:rgba(255,255,255,0.88); }
+    .mb.mine { background:linear-gradient(135deg,#6B3FFF,#C77DFF); border-bottom-right-radius:4px; }
+    .mb-img { width:180px; height:130px; border-radius:12px; background:linear-gradient(135deg,rgba(107,63,255,0.2),rgba(199,125,255,0.2)); display:flex; align-items:center; justify-content:center; font-size:34px; cursor:pointer; }
+    .msg-meta { font-size:10px; color:var(--muted); margin-top:3px; display:flex; align-items:center; gap:3px; }
+    .msg-meta.r { justify-content:flex-end; }
+    .msg-check { color:var(--c3); font-size:11px; }
+    .msg-sender { font-size:11px; font-weight:700; margin-bottom:2px; }
+    .react-row { display:flex; gap:4px; margin-top:4px; }
+    .react-pill { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1); border-radius:50px; padding:2px 7px; font-size:12px; cursor:pointer; }
+    .react-pill:hover { background:rgba(255,255,255,0.14); }
+
+    /* Typing */
+    .typing-row { display:flex; gap:7px; align-items:flex-end; padding:4px 0; }
+    .typing-bub { background:var(--card2); padding:11px 14px; border-radius:18px; border-bottom-left-radius:4px; display:flex; gap:3px; align-items:center; }
+    .td { width:6px; height:6px; background:var(--muted); border-radius:50%; animation:bounce 1.2s infinite; }
+    .td:nth-child(2){animation-delay:.18s;} .td:nth-child(3){animation-delay:.36s;}
+    @keyframes bounce { 0%,60%,100%{transform:translateY(0);opacity:0.4;} 28%{transform:translateY(-4px);opacity:1;} }
+
+    /* Input area */
+    .chat-input { padding:12px 18px; border-top:1px solid var(--border); background:rgba(19,19,48,0.85); flex-shrink:0; }
+    .chat-input-row { display:flex; align-items:flex-end; gap:8px; }
+    .ci-tools { display:flex; gap:3px; }
+    .ci-tool { width:34px; height:34px; background:none; border:none; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:17px; cursor:pointer; color:var(--muted); transition:all 0.2s; }
+    .ci-tool:hover { background:rgba(255,255,255,0.06); color:#fff; }
+    .ci-wrap { flex:1; background:var(--input-bg); border:1px solid var(--border); border-radius:16px; display:flex; align-items:flex-end; gap:6px; padding:8px 12px; transition:border-color 0.2s; }
+    .ci-wrap:focus-within { border-color:rgba(107,63,255,0.5); }
+    .ci-input { flex:1; background:none; border:none; color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:14px; outline:none; resize:none; max-height:110px; line-height:1.5; }
+    .ci-input::placeholder { color:var(--muted); }
+    .ci-emoji { font-size:18px; cursor:pointer; transition:transform 0.2s; padding-bottom:1px; }
+    .ci-emoji:hover { transform:scale(1.2); }
+    .ci-send { width:38px; height:38px; background:var(--grad-btn); border:none; border-radius:11px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:17px; flex-shrink:0; box-shadow:0 4px 12px rgba(107,63,255,0.35); transition:transform 0.15s; }
+    .ci-send:hover { transform:scale(1.06); }
+    .ci-send:active { transform:scale(0.94); }
+
+    @media(max-width:900px){.icon-sb{display:none;} .messenger{grid-template-columns:280px 1fr;}}
+    @media(max-width:640px){.messenger{grid-template-columns:1fr;} .conv-panel{display:none;}}
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="dashboard.html" class="nav-logo">
+    <div class="nav-logo-icon">K</div>
+    <span class="nav-logo-txt">KIAI</span>
+  </a>
+  <div class="nav-title">Messagerie</div>
+  <div class="nav-actions">
+    <div class="nav-icon-btn">🔔<span class="notif-badge">7</span></div>
+    <div class="nav-avatar">H</div>
+  </div>
+</nav>
+
+<div class="messenger">
+
+  <!-- Icon sidebar -->
+  <div class="icon-sb">
+    <a href="dashboard.html" class="isb-btn" title="Accueil">🏠</a>
+    <a href="profil.html" class="isb-btn" title="Profil">👤</a>
+    <a href="messagerie.html" class="isb-btn active" title="Messages">💬<span class="ibadge">3</span></a>
+    <div class="isb-div"></div>
+    <a href="groupes.html" class="isb-btn" title="Groupes">👥</a>
+    <a href="notifications.html" class="isb-btn" title="Notifications">🔔<span class="ibadge">7</span></a>
+    <a href="decouvrir.html" class="isb-btn" title="Découvrir">🔍</a>
+    <div class="isb-space"></div>
+    <a href="parametres.html" class="isb-btn" title="Paramètres">⚙️</a>
+    <a href="index.html" class="isb-btn" title="Déconnexion">🚪</a>
+  </div>
+
+  <!-- Conversations -->
+  <div class="conv-panel">
+    <div class="conv-top">
+      <div class="conv-top-row">
+        <div class="conv-title">Messages</div>
+        <button class="btn-new-msg" title="Nouveau message">✏️</button>
+      </div>
+      <div class="conv-search-wrap">
+        <span class="conv-search-icon">🔍</span>
+        <input type="text" placeholder="Rechercher…" oninput="searchConvs(this.value)">
+      </div>
+    </div>
+    <div class="conv-filters">
+      <button class="conv-filt active" onclick="filterConvs('all',this)">Tous</button>
+      <button class="conv-filt" onclick="filterConvs('unread',this)">Non lus</button>
+      <button class="conv-filt" onclick="filterConvs('group',this)">Groupes</button>
+    </div>
+    <div class="conv-list" id="conv-list"></div>
+  </div>
+
+  <!-- Chat zone -->
+  <div class="chat-area" id="chat-area">
+    <div class="chat-empty" id="chat-empty">
+      <div class="chat-empty-icon">💬</div>
+      <div class="chat-empty-title">Tes messages</div>
+      <div class="chat-empty-desc">Sélectionne une conversation ou commence à écrire à un camarade Keyce 🎓</div>
+      <button class="chat-empty-cta" onclick="openConv(CONVS[0])">Commencer à écrire ✏️</button>
+    </div>
+    <div id="chat-main" style="display:none;flex:1;flex-direction:column;overflow:hidden;">
+      <div class="chat-hdr" id="chat-hdr"></div>
+      <div class="chat-msgs" id="chat-msgs"></div>
+      <div class="chat-input">
+        <div class="chat-input-row">
+          <div class="ci-tools">
+            <button class="ci-tool">📷</button>
+            <button class="ci-tool">📎</button>
+          </div>
+          <div class="ci-wrap">
+            <textarea class="ci-input" id="msg-input" rows="1" placeholder="Écrire un message…" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+            <span class="ci-emoji" onclick="addEmoji()">😊</span>
+          </div>
+          <button class="ci-send" onclick="sendMsg()">➤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const CONVS = [
+  { id:1, type:'dm', name:'Amina Bello', init:'AB', online:true, grad:'linear-gradient(135deg,#FF6B6B,#FFD93D)', sub:'Keyce Douala', time:'09:42', unread:2,
+    msgs:[
+      {f:'them',t:'Salut Henri ! Tu as les notes du cours d\'algo d\'hier ?',ts:'09:30'},
+      {f:'them',t:'Le prof a dit que c\'était important pour les partiels 👀',ts:'09:31'},
+      {f:'mine',t:'Salut Amina ! Oui j\'ai tout, je t\'envoie ça ce soir 👍',ts:'09:35'},
+      {f:'mine',t:'Il était sérieux sur les complexités temporelles 😅',ts:'09:35'},
+      {f:'them',t:'Merci bcp !! Tu es un sauveur 🙏',ts:'09:40'},
+      {f:'them',t:'On se retrouve à la bibli à 14h pour réviser ensemble ?',ts:'09:42'},
+    ]
+  },
+  { id:2, type:'dm', name:'Kevin Fouda', init:'KF', online:true, grad:'linear-gradient(135deg,#4D96FF,#C77DFF)', sub:'Keyce Yaoundé', time:'Hier', unread:1,
+    msgs:[
+      {f:'mine',t:'Kev ! Votre présentation était top hier 🔥',ts:'16:00'},
+      {f:'them',t:'Merci mec ! On a bossé dur dessus',ts:'16:05'},
+      {f:'them',t:'On devrait collaborer sur le prochain projet non ?',ts:'16:06'},
+      {f:'mine',t:'Carrément ! J\'ai une idée d\'app mobile pour les étudiants Keyce',ts:'16:10'},
+      {type:'img', f:'them',ts:'16:18'},
+      {f:'them',t:'Regarde cette maquette que j\'ai commencée 👆',ts:'16:19'},
+    ]
+  },
+  { id:3, type:'group', name:'Devs Keyce 🇨🇲', init:'👨‍💻', online:false, grad:'linear-gradient(135deg,#4D96FF,#6BCB77)', sub:'234 membres', time:'Lundi', unread:0,
+    msgs:[
+      {f:'them',sender:'Sara Ondo',sinit:'SO',sgrad:'linear-gradient(135deg,#C77DFF,#4D96FF)',t:'Qui est dispo pour une revue de code ce soir ?',ts:'18:00'},
+      {f:'mine',t:'Moi à partir de 20h 🙋',ts:'18:05'},
+      {f:'them',sender:'Marc T.',sinit:'MT',sgrad:'linear-gradient(135deg,#6BCB77,#FFD93D)',t:'Pareil, 20h c\'est parfait',ts:'18:10'},
+      {f:'them',sender:'Boris K.',sinit:'BK',sgrad:'linear-gradient(135deg,#4D96FF,#6BCB77)',t:'Je peux pas ce soir, partagez le repo après stp 🙏',ts:'18:12'},
+      {f:'them',sender:'Sara Ondo',sinit:'SO',sgrad:'linear-gradient(135deg,#C77DFF,#4D96FF)',t:'OK ! On se retrouve sur Discord à 20h alors 🚀',ts:'18:15'},
+    ]
+  },
+  { id:4, type:'dm', name:'Christelle Mbarga', init:'CM', online:false, grad:'linear-gradient(135deg,#6BCB77,#4D96FF)', sub:'Keyce Bafoussam', time:'Lundi', unread:0,
+    msgs:[
+      {f:'them',t:'Henri, tu peux me confirmer le programme du voyage ?',ts:'10:00'},
+      {f:'mine',t:'Oui ! Départ vendredi 7h de Bafoussam, arrivée Douala vers 13h',ts:'10:05'},
+      {f:'mine',t:'Inscriptions ferment demain soir',ts:'10:06'},
+      {f:'them',t:'Parfait merci ! Je transmets aux délégués 🙌',ts:'10:20'},
+    ]
+  },
+  { id:5, type:'group', name:'Délégués Keyce ⭐', init:'⭐', online:false, grad:'linear-gradient(135deg,#FFD93D,#FF6B6B)', sub:'18 membres', time:'Dim', unread:0,
+    msgs:[
+      {f:'them',sender:'Paul N.',sinit:'PN',sgrad:'linear-gradient(135deg,#FFD93D,#FF6B6B)',t:'Réunion des délégués repoussée au mercredi',ts:'14:00'},
+      {f:'mine',t:'Ça me convient, à quelle heure ?',ts:'14:05'},
+      {f:'them',sender:'Paul N.',sinit:'PN',sgrad:'linear-gradient(135deg,#FFD93D,#FF6B6B)',t:'15h sur Teams, lien partagé demain matin',ts:'14:10'},
+    ]
+  },
+  { id:6, type:'dm', name:'Sara Ondo', init:'SO', online:true, grad:'linear-gradient(135deg,#C77DFF,#4D96FF)', sub:'Keyce Douala', time:'Sam', unread:0,
+    msgs:[
+      {f:'them',t:'Heyy ! Tu sais faire du state management en React ?',ts:'20:00'},
+      {f:'mine',t:'Oui ! useContext pour petits projets, Zustand/Redux pour grands',ts:'20:10'},
+      {f:'them',t:'Super merci 🙌 et pour les hooks personnalisés ?',ts:'20:12'},
+      {f:'mine',t:'Je t\'envoie un exemple ce soir, c\'est plus clair avec du code 😄',ts:'20:15'},
+      {f:'them',t:'Tu es trop fort !!',ts:'20:16', react:'❤️ 2'},
+    ]
+  },
+];
+
+let curId = null;
+
+function renderConvList(list) {
+  document.getElementById('conv-list').innerHTML = list.map(c => {
+    const last = c.msgs[c.msgs.length-1];
+    const lastTxt = last.type==='img' ? '📷 Photo' : (last.f==='mine'?'Vous : ':'')+last.t;
+    return `<div class="cv ${c.unread?'unread':''} ${curId===c.id?'active':''}" onclick="openConv(${c.id})">
+      <div class="cv-av-wrap">
+        <div class="cv-av ${c.type==='group'?'grp':''}" style="background:${c.grad};color:#fff;font-size:${c.type==='group'?'20px':'15px'}">${c.init}</div>
+        ${c.online?'<div class="cv-dot"></div>':''}
+      </div>
+      <div class="cv-body">
+        <div class="cv-row1"><div class="cv-name">${c.name}</div><div class="cv-time">${c.time}</div></div>
+        <div class="cv-last">${lastTxt}</div>
+      </div>
+      ${c.unread?`<div class="cv-ubadge">${c.unread}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function filterConvs(type, btn) {
+  document.querySelectorAll('.conv-filt').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  let list = CONVS;
+  if(type==='unread') list=CONVS.filter(c=>c.unread>0);
+  if(type==='group') list=CONVS.filter(c=>c.type==='group');
+  renderConvList(list);
+}
+function searchConvs(q) { renderConvList(CONVS.filter(c=>c.name.toLowerCase().includes(q.toLowerCase()))); }
+
+function openConv(id) {
+  const conv = typeof id === 'number' ? CONVS.find(c=>c.id===id) : id;
+  if(!conv) return;
+  curId = conv.id;
+  conv.unread = 0;
+
+  document.getElementById('chat-empty').style.display = 'none';
+  const cm = document.getElementById('chat-main');
+  cm.style.display = 'flex';
+
+  // Header
+  document.getElementById('chat-hdr').innerHTML = `
+    <div class="ch-av ${conv.type==='group'?'grp':''}" style="background:${conv.grad};color:#fff;font-size:${conv.type==='group'?'18px':'14px'}">
+      ${conv.init}${conv.online?'<div class="ch-dot"></div>':''}
+    </div>
+    <div class="ch-info">
+      <div class="ch-name">${conv.name}</div>
+      <div class="ch-status ${conv.online?'online':'offline'}">${conv.online?'🟢 En ligne':conv.sub}</div>
+    </div>
+    <div class="ch-actions">
+      <div class="ch-btn">📹</div>
+      <div class="ch-btn">📞</div>
+      <div class="ch-btn">ℹ️</div>
+    </div>`;
+
+  renderMessages(conv);
+  renderConvList(CONVS);
+}
+
+function renderMessages(conv) {
+  const box = document.getElementById('chat-msgs');
+  let html = `<div class="date-pill"><span>Aujourd'hui</span></div>`;
+  let prevFrom = null;
+
+  conv.msgs.forEach(msg => {
+    const mine = msg.f === 'mine';
+    const isGroup = conv.type === 'group';
+    const sameFrom = prevFrom === msg.f && !msg.sender;
+    prevFrom = msg.f;
+
+    const avGrad = msg.sgrad || conv.grad;
+    const avInit = msg.sinit || (mine ? 'H' : conv.init);
+
+    if(msg.type === 'img') {
+      html += `<div class="msg-row ${mine?'mine':''}">
+        <div class="ma ${sameFrom?'hidden':''}" style="background:${avGrad};color:#fff">${avInit}</div>
+        <div><div class="mb-img">🖼️</div><div class="msg-meta ${mine?'r':''}">${msg.ts}</div></div>
+        ${mine?`<div class="ma hidden"></div>`:''}
+      </div>`;
+    } else {
+      html += `<div class="msg-row ${mine?'mine':''}">
+        ${!mine?`<div class="ma ${sameFrom&&!msg.sender?'hidden':''}" style="background:${avGrad};color:#fff">${avInit}</div>`:''}
+        <div>
+          ${isGroup && !mine && msg.sender && !sameFrom ? `<div class="msg-sender" style="color:${avGrad.includes('FF6B6B')?'#FF6B6B':avGrad.includes('6BCB77')?'#6BCB77':avGrad.includes('FFD93D')?'#FFD93D':'#C77DFF'}">${msg.sender}</div>` : ''}
+          <div class="mb ${mine?'mine':'them'}">${msg.t}${msg.react?`<div class="react-row"><span class="react-pill">${msg.react}</span></div>`:''}</div>
+          <div class="msg-meta ${mine?'r':''}">${msg.ts}${mine?' <span class="msg-check">✓✓</span>':''}</div>
+        </div>
+        ${mine?`<div class="ma hidden"></div>`:''}
+      </div>`;
+    }
+  });
+
+  if(conv.online && conv.type==='dm') {
+    html += `<div class="typing-row">
+      <div class="ma" style="background:${conv.grad};color:#fff">${conv.init}</div>
+      <div class="typing-bub"><div class="td"></div><div class="td"></div><div class="td"></div></div>
+    </div>`;
+  }
+
+  box.innerHTML = html;
+  box.scrollTop = box.scrollHeight;
+}
+
+function sendMsg() {
+  const inp = document.getElementById('msg-input');
+  const text = inp.value.trim();
+  if(!text || !curId) return;
+  const conv = CONVS.find(c=>c.id===curId);
+  const now = new Date();
+  const ts = now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+  conv.msgs.push({f:'mine', t:text, ts});
+  conv.time = ts;
+  inp.value = ''; inp.style.height='auto';
+  renderMessages(conv);
+  renderConvList(CONVS);
+  if(conv.type==='dm') {
+    setTimeout(()=>{
+      const replies=['😄 Super !','OK noté 👍','Bien reçu !','🙌 Parfait !','Merci Henri !','On fait ça 🔥'];
+      conv.msgs.push({f:'them', t:replies[Math.floor(Math.random()*replies.length)], ts});
+      renderMessages(conv); renderConvList(CONVS);
+    }, 1800+Math.random()*1200);
+  }
+}
+
+function handleKey(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();} }
+function autoResize(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,110)+'px'; }
+function addEmoji() {
+  const em=['😊','🔥','👍','🙏','💪','😅','✨','👌','🚀','🎓'];
+  const inp=document.getElementById('msg-input');
+  inp.value+=em[Math.floor(Math.random()*em.length)]; inp.focus();
+}
+
+renderConvList(CONVS);
+</script>
+</body>
+</html>
