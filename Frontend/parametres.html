@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyce KIAI — Paramètres</title>
+  <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --c1:#FF6B6B;--c2:#FFD93D;--c3:#6BCB77;--c4:#4D96FF;--c5:#C77DFF;
+      --grad-main:linear-gradient(135deg,#FF6B6B 0%,#C77DFF 50%,#4D96FF 100%);
+      --grad-btn:linear-gradient(135deg,#FF6B6B,#C77DFF);
+      --dark:#0D0D1A;--card:#191930;--border:rgba(255,255,255,0.08);
+      --text:#ffffff;--muted:rgba(255,255,255,0.5);--input-bg:rgba(255,255,255,0.06);
+    }
+    html,body{min-height:100%;background:var(--dark);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;}
+    .navbar{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;background:rgba(13,13,26,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.5rem;gap:1rem;}
+    .nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0;}
+    .nav-logo-icon{width:32px;height:32px;background:var(--grad-main);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Clash Display',sans-serif;font-size:16px;font-weight:700;color:#fff;}
+    .nav-logo-txt{font-family:'Clash Display',sans-serif;font-size:18px;font-weight:700;background:var(--grad-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .nav-search{flex:1;max-width:360px;margin:0 auto;position:relative;}
+    .nav-search input{width:100%;background:var(--input-bg);border:1px solid var(--border);border-radius:50px;padding:8px 16px 8px 36px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;}
+    .nav-search input::placeholder{color:var(--muted);}
+    .nav-search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);}
+    .nav-actions{display:flex;align-items:center;gap:8px;margin-left:auto;}
+    .nav-icon-btn{width:36px;height:36px;background:var(--input-bg);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;position:relative;}
+    .notif-badge{position:absolute;top:-2px;right:-2px;width:16px;height:16px;background:var(--c1);border-radius:50%;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#fff;}
+    .nav-avatar{width:36px;height:36px;background:var(--grad-main);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;cursor:pointer;}
+
+    /* ── LAYOUT 3 colonnes ── */
+    .layout{max-width:1100px;margin:0 auto;padding:76px 1rem 2rem;display:grid;grid-template-columns:240px 1fr;gap:1.5rem;}
+
+    /* SIDEBAR GAUCHE nav globale */
+    .sidebar-left{position:sticky;top:76px;align-self:start;}
+    .nav-menu{list-style:none;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:8px;}
+    .nav-menu li{margin-bottom:4px;}
+    .nav-menu a{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;transition:all 0.2s;}
+    .nav-menu a:hover{background:rgba(255,255,255,0.06);color:#fff;}
+    .nav-menu a.active{background:rgba(199,125,255,0.12);color:#C77DFF;}
+    .nav-menu .icon{font-size:18px;width:20px;text-align:center;}
+    .menu-badge{margin-left:auto;background:var(--c1);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:50px;}
+
+    /* ── SETTINGS LAYOUT ── */
+    .settings-wrap{display:grid;grid-template-columns:220px 1fr;gap:1.5rem;min-width:0;}
+
+    /* Settings nav */
+    .settings-nav{position:sticky;top:76px;align-self:start;}
+    .settings-nav-title{font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;margin-bottom:14px;}
+    .s-nav-list{list-style:none;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:8px;}
+    .s-nav-item{margin-bottom:2px;}
+    .s-nav-btn{width:100%;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;background:none;border:none;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;text-align:left;}
+    .s-nav-btn:hover{background:rgba(255,255,255,0.06);color:#fff;}
+    .s-nav-btn.active{background:rgba(199,125,255,0.12);color:#C77DFF;}
+    .s-nav-btn .s-icon{font-size:18px;width:20px;text-align:center;}
+    .s-nav-danger{color:#FF6B6B !important;}
+    .s-nav-danger.active,
+    .s-nav-danger:hover{background:rgba(255,107,107,0.1) !important;color:#FF6B6B !important;}
+
+    /* Settings panels */
+    .settings-content{min-width:0;}
+    .s-panel{display:none;animation:fadeIn 0.3s ease;}
+    .s-panel.active{display:block;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+    .s-section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.25rem;margin-bottom:1rem;}
+    .s-section-title{font-family:'Clash Display',sans-serif;font-size:16px;font-weight:600;margin-bottom:4px;}
+    .s-section-desc{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5;}
+    .s-divider{height:1px;background:var(--border);margin:14px 0;}
+
+    /* Form elements */
+    .form-group{margin-bottom:16px;}
+    .form-label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;display:block;}
+    .form-input{width:100%;background:var(--input-bg);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;}
+    .form-input:focus{border-color:rgba(199,125,255,0.4);}
+    .form-input::placeholder{color:var(--muted);}
+    select.form-input option{background:#191930;color:#fff;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .form-hint{font-size:12px;color:var(--muted);margin-top:5px;}
+
+    /* Toggle row */
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);}
+    .toggle-row:last-child{border-bottom:none;}
+    .toggle-info{flex:1;min-width:0;padding-right:12px;}
+    .toggle-label{font-size:14px;font-weight:500;}
+    .toggle-desc{font-size:12px;color:var(--muted);margin-top:2px;}
+    .toggle{width:40px;height:22px;background:rgba(255,255,255,0.1);border-radius:11px;position:relative;cursor:pointer;transition:background 0.2s;flex-shrink:0;}
+    .toggle.on{background:linear-gradient(135deg,#6BCB77,#4D96FF);}
+    .toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.3);}
+    .toggle.on::after{transform:translateX(18px);}
+
+    /* Radio group */
+    .radio-group{display:flex;gap:8px;flex-wrap:wrap;}
+    .radio-opt{padding:8px 16px;background:var(--input-bg);border:1px solid var(--border);border-radius:50px;font-size:13px;cursor:pointer;transition:all 0.2s;font-weight:500;}
+    .radio-opt.selected{background:rgba(199,125,255,0.15);border-color:rgba(199,125,255,0.4);color:#C77DFF;}
+    .radio-opt:hover{border-color:rgba(255,255,255,0.2);color:#fff;}
+
+    /* Color theme picker */
+    .theme-grid{display:flex;gap:10px;flex-wrap:wrap;}
+    .theme-opt{width:40px;height:40px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all 0.2s;position:relative;}
+    .theme-opt.selected::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;}
+    .theme-opt:hover{transform:scale(1.1);}
+
+    /* Save button */
+    .btn-save{padding:10px 28px;background:var(--grad-btn);border:none;border-radius:50px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 4px 15px rgba(199,125,255,0.3);transition:opacity 0.2s,transform 0.15s;}
+    .btn-save:hover{opacity:0.9;transform:translateY(-1px);}
+    .btn-secondary{padding:10px 22px;background:var(--input-bg);border:1px solid var(--border);border-radius:50px;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;cursor:pointer;transition:all 0.2s;margin-right:8px;}
+    .btn-secondary:hover{color:#fff;}
+    .btn-danger{padding:10px 22px;background:rgba(255,107,107,0.12);border:1px solid rgba(255,107,107,0.3);border-radius:50px;color:#FF6B6B;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;cursor:pointer;transition:all 0.2s;}
+    .btn-danger:hover{background:rgba(255,107,107,0.22);}
+
+    /* Toast */
+    .toast{position:fixed;bottom:24px;right:24px;background:#191930;border:1px solid rgba(107,203,119,0.4);border-radius:12px;padding:12px 20px;color:#6BCB77;font-weight:600;font-size:14px;z-index:999;display:none;animation:slideUp 0.3s ease;}
+    @keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+    /* Avatar upload zone */
+    .avatar-upload{display:flex;align-items:center;gap:16px;margin-bottom:16px;}
+    .avatar-preview{width:80px;height:80px;border-radius:50%;background:var(--grad-main);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;flex-shrink:0;position:relative;cursor:pointer;}
+    .avatar-overlay{position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;font-size:20px;}
+    .avatar-preview:hover .avatar-overlay{opacity:1;}
+    .avatar-btns{display:flex;flex-direction:column;gap:6px;}
+
+    /* Danger zone */
+    .danger-zone{border-color:rgba(255,107,107,0.2) !important;}
+    .danger-zone .s-section-title{color:#FF6B6B;}
+
+    @media(max-width:960px){.settings-wrap{grid-template-columns:1fr;}.settings-nav{position:static;}.s-nav-list{display:flex;gap:4px;flex-wrap:wrap;background:none;border:none;padding:0;}.s-nav-btn{border-radius:50px;padding:8px 16px;border:1px solid var(--border);background:var(--card);white-space:nowrap;} .s-nav-btn .s-icon{display:none;}}
+    @media(max-width:900px){.layout{grid-template-columns:1fr;}.sidebar-left{display:none;}}
+    @media(max-width:600px){.nav-search{display:none;}.form-row{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+
+<div class="toast" id="toast">✓ Modifications enregistrées !</div>
+
+<nav class="navbar">
+  <a href="dashboard.html" class="nav-logo"><div class="nav-logo-icon">K</div><span class="nav-logo-txt">KIAI</span></a>
+  <div class="nav-search"><span class="nav-search-icon">🔍</span><input type="text" placeholder="Chercher..."></div>
+  <div class="nav-actions">
+    <div class="nav-icon-btn">💬<span class="notif-badge">3</span></div>
+    <div class="nav-icon-btn">🔔<span class="notif-badge">7</span></div>
+    <div class="nav-avatar">H</div>
+  </div>
+</nav>
+
+<div class="layout">
+  <aside class="sidebar-left">
+    <ul class="nav-menu">
+      <li><a href="dashboard.html"><span class="icon">🏠</span> Fil d'actualité</a></li>
+      <li><a href="profil.html"><span class="icon">👤</span> Mon profil</a></li>
+      <li><a href="#"><span class="icon">💬</span> Messagerie <span class="menu-badge">3</span></a></li>
+      <li><a href="#"><span class="icon">👥</span> Groupes</a></li>
+      <li><a href="notifications.html"><span class="icon">🔔</span> Notifications <span class="menu-badge">7</span></a></li>
+      <li><a href="decouvrir.html"><span class="icon">🔍</span> Découvrir</a></li>
+      <li><a href="parametres.html" class="active"><span class="icon">⚙️</span> Paramètres</a></li>
+      <li><a href="index.html"><span class="icon">🚪</span> Déconnexion</a></li>
+    </ul>
+  </aside>
+
+  <div class="settings-wrap">
+    <!-- Settings nav -->
+    <nav class="settings-nav">
+      <div class="settings-nav-title">⚙️ Paramètres</div>
+      <ul class="s-nav-list">
+        <li class="s-nav-item"><button class="s-nav-btn active" onclick="switchPanel('compte',this)"><span class="s-icon">👤</span> Compte</button></li>
+        <li class="s-nav-item"><button class="s-nav-btn" onclick="switchPanel('confidentialite',this)"><span class="s-icon">🔒</span> Confidentialité</button></li>
+        <li class="s-nav-item"><button class="s-nav-btn" onclick="switchPanel('notifications',this)"><span class="s-icon">🔔</span> Notifications</button></li>
+        <li class="s-nav-item"><button class="s-nav-btn" onclick="switchPanel('apparence',this)"><span class="s-icon">🎨</span> Apparence</button></li>
+        <li class="s-nav-item"><button class="s-nav-btn" onclick="switchPanel('securite',this)"><span class="s-icon">🛡️</span> Sécurité</button></li>
+        <li class="s-nav-item"><button class="s-nav-btn" onclick="switchPanel('langue',this)"><span class="s-icon">🌍</span> Langue</button></li>
+        <li class="s-nav-item" style="margin-top:8px"><button class="s-nav-btn s-nav-danger" onclick="switchPanel('danger',this)"><span class="s-icon">⚠️</span> Zone de danger</button></li>
+      </ul>
+    </nav>
+
+    <!-- Settings panels -->
+    <div class="settings-content">
+
+      <!-- ── COMPTE ── -->
+      <div class="s-panel active" id="panel-compte">
+        <div class="s-section">
+          <div class="s-section-title">Photo de profil</div>
+          <div class="s-section-desc">Votre photo est visible par tous les membres Keyce.</div>
+          <div class="avatar-upload">
+            <div class="avatar-preview">H<div class="avatar-overlay">📷</div></div>
+            <div class="avatar-btns">
+              <button class="btn-secondary" style="margin:0">📷 Changer la photo</button>
+              <button class="btn-danger" style="padding:7px 16px;font-size:13px">Supprimer</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-section">
+          <div class="s-section-title">Informations personnelles</div>
+          <div class="s-section-desc">Ces informations sont visibles sur votre profil public.</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Prénom</label><input class="form-input" value="Henri Michel"></div>
+            <div class="form-group"><label class="form-label">Nom</label><input class="form-input" value="Nkodo"></div>
+          </div>
+          <div class="form-group"><label class="form-label">Nom d'utilisateur</label><input class="form-input" value="@henri.nkodo"><div class="form-hint">keyce-kiai.cm/@henri.nkodo</div></div>
+          <div class="form-group"><label class="form-label">Bio</label><textarea class="form-input" rows="3">Étudiant passionné en L3 Informatique à Keyce Yaoundé. Développeur web & mobile 🚀</textarea></div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Campus</label>
+              <select class="form-input"><option selected>Yaoundé</option><option>Douala</option><option>Bafoussam</option><option>Ngounde</option></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Niveau</label>
+              <select class="form-input"><option>L1</option><option>L2</option><option selected>L3</option><option>M1</option><option>M2</option></select>
+            </div>
+          </div>
+          <div class="form-group"><label class="form-label">Filière</label><input class="form-input" value="Informatique"></div>
+          <div class="form-group"><label class="form-label">Email académique</label><input class="form-input" type="email" value="henri.nkodo@keyce-cm.edu"></div>
+          <div class="form-group"><label class="form-label">Téléphone</label><input class="form-input" type="tel" placeholder="+237 6XX XXX XXX"></div>
+          <div class="form-group"><label class="form-label">LinkedIn</label><input class="form-input" value="linkedin.com/in/henrinkodo"></div>
+          <button class="btn-save" onclick="showToast()">💾 Enregistrer</button>
+        </div>
+      </div>
+
+      <!-- ── CONFIDENTIALITÉ ── -->
+      <div class="s-panel" id="panel-confidentialite">
+        <div class="s-section">
+          <div class="s-section-title">Visibilité du profil</div>
+          <div class="s-section-desc">Choisissez qui peut voir votre profil et vos publications.</div>
+          <div class="form-group">
+            <label class="form-label">Mon profil est visible par</label>
+            <div class="radio-group" id="visibility">
+              <div class="radio-opt selected" onclick="selectRadio('visibility',this)">🌍 Tous les membres Keyce</div>
+              <div class="radio-opt" onclick="selectRadio('visibility',this)">👥 Mes amis seulement</div>
+              <div class="radio-opt" onclick="selectRadio('visibility',this)">🔒 Personne (privé)</div>
+            </div>
+          </div>
+          <div class="s-divider"></div>
+          <div class="toggle-row">
+            <div class="toggle-info"><div class="toggle-label">Afficher mon campus</div><div class="toggle-desc">Visible sur votre profil public</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info"><div class="toggle-label">Afficher ma filière</div><div class="toggle-desc">Visible dans les recherches</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info"><div class="toggle-label">Afficher mon email</div><div class="toggle-desc">Visible uniquement par vos amis</div></div>
+            <div class="toggle" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info"><div class="toggle-label">Afficher mon statut en ligne</div><div class="toggle-desc">Indique quand vous êtes connecté</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+
+        <div class="s-section">
+          <div class="s-section-title">Interactions</div>
+          <div class="toggle-row">
+            <div class="toggle-info"><div class="toggle-label">Qui peut m'envoyer des messages</div></div>
+            <div style="display:flex;gap:6px">
+              <div class="radio-opt selected" onclick="selectRadioInline(this,'.msg-radio')" style="padding:5px 12px;font-size:12px">Tous</div>
+              <div class="radio-opt msg-radio" onclick="selectRadioInline(this,'.msg-radio')" style="padding:5px 12px;font-size:12px">Amis</div>
+            </div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info"><div class="toggle-label">Qui peut voir mes publications</div></div>
+            <div style="display:flex;gap:6px">
+              <div class="radio-opt selected" onclick="selectRadioInline(this,'.pub-radio')" style="padding:5px 12px;font-size:12px">Tous</div>
+              <div class="radio-opt pub-radio" onclick="selectRadioInline(this,'.pub-radio')" style="padding:5px 12px;font-size:12px">Amis</div>
+            </div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info"><div class="toggle-label">Permettre d'être tagué dans des posts</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+        <button class="btn-save" onclick="showToast()">💾 Enregistrer</button>
+      </div>
+
+      <!-- ── NOTIFICATIONS ── -->
+      <div class="s-panel" id="panel-notifications">
+        <div class="s-section">
+          <div class="s-section-title">Notifications push</div>
+          <div class="s-section-desc">Gérez les alertes que vous recevez sur votre appareil.</div>
+          <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">❤️ J'aime sur vos publications</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">💬 Commentaires</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">@ Mentions</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">👥 Nouvelles demandes d'amitié</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">🏘️ Activité dans mes groupes</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">📢 Annonces officielles du campus</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">🎓 Rappels d'examens et événements</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+        </div>
+        <div class="s-section">
+          <div class="s-section-title">Email digest</div>
+          <div class="s-section-desc">Récapitulatif des activités envoyé par email.</div>
+          <div class="form-group">
+            <label class="form-label">Fréquence</label>
+            <div class="radio-group">
+              <div class="radio-opt selected" onclick="selectRadio('digest',this)">Jamais</div>
+              <div class="radio-opt" onclick="selectRadio('digest',this)">Quotidien</div>
+              <div class="radio-opt" onclick="selectRadio('digest',this)">Hebdomadaire</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-save" onclick="showToast()">💾 Enregistrer</button>
+      </div>
+
+      <!-- ── APPARENCE ── -->
+      <div class="s-panel" id="panel-apparence">
+        <div class="s-section">
+          <div class="s-section-title">Thème</div>
+          <div class="s-section-desc">Choisissez l'apparence de l'application.</div>
+          <div class="radio-group" style="margin-bottom:16px">
+            <div class="radio-opt selected" onclick="selectRadio('theme',this)">🌙 Sombre</div>
+            <div class="radio-opt" onclick="selectRadio('theme',this)">☀️ Clair</div>
+            <div class="radio-opt" onclick="selectRadio('theme',this)">🖥️ Système</div>
+          </div>
+        </div>
+        <div class="s-section">
+          <div class="s-section-title">Couleur d'accentuation</div>
+          <div class="s-section-desc">Couleur utilisée pour les boutons et éléments actifs.</div>
+          <div class="theme-grid">
+            <div class="theme-opt selected" style="background:linear-gradient(135deg,#FF6B6B,#C77DFF)" onclick="selectThemeColor(this)"></div>
+            <div class="theme-opt" style="background:linear-gradient(135deg,#4D96FF,#6BCB77)" onclick="selectThemeColor(this)"></div>
+            <div class="theme-opt" style="background:linear-gradient(135deg,#FFD93D,#FF6B6B)" onclick="selectThemeColor(this)"></div>
+            <div class="theme-opt" style="background:linear-gradient(135deg,#6BCB77,#4D96FF)" onclick="selectThemeColor(this)"></div>
+            <div class="theme-opt" style="background:linear-gradient(135deg,#C77DFF,#4D96FF)" onclick="selectThemeColor(this)"></div>
+          </div>
+        </div>
+        <div class="s-section">
+          <div class="s-section-title">Taille de police</div>
+          <div class="radio-group">
+            <div class="radio-opt" onclick="selectRadio('font',this)">Petite</div>
+            <div class="radio-opt selected" onclick="selectRadio('font',this)">Normale</div>
+            <div class="radio-opt" onclick="selectRadio('font',this)">Grande</div>
+          </div>
+        </div>
+        <div class="s-section">
+          <div class="s-section-title">Densité du contenu</div>
+          <div class="radio-group">
+            <div class="radio-opt" onclick="selectRadio('density',this)">Compact</div>
+            <div class="radio-opt selected" onclick="selectRadio('density',this)">Normal</div>
+            <div class="radio-opt" onclick="selectRadio('density',this)">Spacieux</div>
+          </div>
+        </div>
+        <button class="btn-save" onclick="showToast()">💾 Appliquer</button>
+      </div>
+
+      <!-- ── SÉCURITÉ ── -->
+      <div class="s-panel" id="panel-securite">
+        <div class="s-section">
+          <div class="s-section-title">Changer le mot de passe</div>
+          <div class="form-group"><label class="form-label">Mot de passe actuel</label><input class="form-input" type="password" placeholder="••••••••"></div>
+          <div class="form-group"><label class="form-label">Nouveau mot de passe</label><input class="form-input" type="password" placeholder="••••••••"><div class="form-hint">Minimum 8 caractères, avec majuscule et chiffre</div></div>
+          <div class="form-group"><label class="form-label">Confirmer le nouveau mot de passe</label><input class="form-input" type="password" placeholder="••••••••"></div>
+          <button class="btn-save" onclick="showToast()">🔐 Changer le mot de passe</button>
+        </div>
+        <div class="s-section">
+          <div class="s-section-title">Authentification à deux facteurs</div>
+          <div class="s-section-desc">Ajoutez une couche de sécurité supplémentaire à votre compte.</div>
+          <div class="toggle-row">
+            <div class="toggle-info"><div class="toggle-label">Activer la 2FA</div><div class="toggle-desc">Via SMS ou application d'authentification</div></div>
+            <div class="toggle" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+        <div class="s-section">
+          <div class="s-section-title">Sessions actives</div>
+          <div class="s-section-desc">Appareils actuellement connectés à votre compte.</div>
+          <div style="background:rgba(107,203,119,0.08);border:1px solid rgba(107,203,119,0.2);border-radius:10px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">
+            <span style="font-size:20px">💻</span>
+            <div>
+              <div style="font-size:13px;font-weight:600">Chrome — Windows 11</div>
+              <div style="font-size:11px;color:#6BCB77">Session actuelle · Yaoundé, CM</div>
+            </div>
+          </div>
+          <div style="background:var(--input-bg);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px;">
+            <span style="font-size:20px">📱</span>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600">Application mobile — Android</div>
+              <div style="font-size:11px;color:var(--muted)">Dernière connexion il y a 2h</div>
+            </div>
+            <button class="btn-danger" style="padding:5px 12px;font-size:12px">Déconnecter</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── LANGUE ── -->
+      <div class="s-panel" id="panel-langue">
+        <div class="s-section">
+          <div class="s-section-title">Langue de l'interface</div>
+          <div class="form-group">
+            <label class="form-label">Langue</label>
+            <select class="form-input">
+              <option selected>🇫🇷 Français</option>
+              <option>🇬🇧 English</option>
+            </select>
+          </div>
+        </div>
+        <div class="s-section">
+          <div class="s-section-title">Région et fuseau horaire</div>
+          <div class="form-group">
+            <label class="form-label">Pays</label>
+            <select class="form-input"><option selected>🇨🇲 Cameroun</option><option>🇫🇷 France</option><option>🇨🇮 Côte d'Ivoire</option><option>🇸🇳 Sénégal</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fuseau horaire</label>
+            <select class="form-input"><option selected>Africa/Douala (UTC+1)</option><option>Europe/Paris (UTC+2)</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Format de date</label>
+            <div class="radio-group">
+              <div class="radio-opt selected" onclick="selectRadio('date',this)">JJ/MM/AAAA</div>
+              <div class="radio-opt" onclick="selectRadio('date',this)">MM/JJ/AAAA</div>
+              <div class="radio-opt" onclick="selectRadio('date',this)">AAAA-MM-JJ</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-save" onclick="showToast()">💾 Enregistrer</button>
+      </div>
+
+      <!-- ── DANGER ZONE ── -->
+      <div class="s-panel" id="panel-danger">
+        <div class="s-section">
+          <div class="s-section-title">Désactiver le compte</div>
+          <div class="s-section-desc">Votre compte sera masqué temporairement. Vous pourrez le réactiver en vous reconnectant. Vos données sont conservées.</div>
+          <button class="btn-danger">⏸️ Désactiver temporairement</button>
+        </div>
+        <div class="s-section danger-zone">
+          <div class="s-section-title">Supprimer le compte</div>
+          <div class="s-section-desc" style="color:rgba(255,107,107,0.8)">⚠️ Cette action est <strong style="color:#FF6B6B">irréversible</strong>. Toutes vos données, publications, messages et connexions seront définitivement supprimés. Aucune restauration ne sera possible.</div>
+          <div class="form-group" style="margin-top:14px"><label class="form-label">Confirmez en tapant votre nom d'utilisateur</label><input class="form-input" placeholder="@henri.nkodo" style="border-color:rgba(255,107,107,0.2)"></div>
+          <button class="btn-danger" style="margin-top:4px">🗑️ Supprimer définitivement mon compte</button>
+        </div>
+      </div>
+
+    </div><!-- /settings-content -->
+  </div><!-- /settings-wrap -->
+</div>
+
+<script>
+function switchPanel(name, btn) {
+  document.querySelectorAll('.s-nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.s-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
+}
+
+function selectRadio(group, el) {
+  el.closest('.radio-group').querySelectorAll('.radio-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function selectRadioInline(el, selector) {
+  el.closest('.toggle-row').querySelectorAll(selector).forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  el.closest('.toggle-row').querySelectorAll('.radio-opt').forEach(o => {
+    if (o !== el && !o.matches(selector)) o.classList.remove('selected');
+  });
+  // simpler: just toggle within the row
+  const siblings = el.closest('div').querySelectorAll('.radio-opt');
+  siblings.forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function selectThemeColor(el) {
+  document.querySelectorAll('.theme-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 2500);
+}
+</script>
+</body>
+</html>
