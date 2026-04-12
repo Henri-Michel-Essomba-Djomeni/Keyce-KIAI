@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyce KIAI — Profil</title>
+  <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --c1: #FF6B6B; --c2: #FFD93D; --c3: #6BCB77;
+      --c4: #4D96FF; --c5: #C77DFF;
+      --grad-main: linear-gradient(135deg, #FF6B6B 0%, #C77DFF 50%, #4D96FF 100%);
+      --grad-btn:  linear-gradient(135deg, #FF6B6B, #C77DFF);
+      --dark: #0D0D1A;
+      --surface: #13132A;
+      --card: #191930;
+      --border: rgba(255,255,255,0.08);
+      --text: #ffffff;
+      --muted: rgba(255,255,255,0.5);
+      --input-bg: rgba(255,255,255,0.06);
+    }
+
+    html, body {
+      min-height: 100%; background: var(--dark);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+    }
+
+    /* ── NAVBAR ── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 60px;
+      background: rgba(13,13,26,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+      padding: 0 1.5rem;
+      gap: 1rem;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none; flex-shrink: 0;
+    }
+    .nav-logo-icon {
+      width: 32px; height: 32px;
+      background: var(--grad-main);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Clash Display', sans-serif;
+      font-size: 16px; font-weight: 700; color: #fff;
+    }
+    .nav-logo-txt {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 18px; font-weight: 700;
+      background: var(--grad-main);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .nav-search {
+      flex: 1; max-width: 360px; margin: 0 auto; position: relative;
+    }
+    .nav-search input {
+      width: 100%; background: var(--input-bg); border: 1px solid var(--border);
+      border-radius: 50px; padding: 8px 16px 8px 36px; color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .nav-search input::placeholder { color: var(--muted); }
+    .nav-search input:focus { border-color: rgba(199,125,255,0.4); }
+    .nav-search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 14px; }
+    .nav-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+    .nav-icon-btn {
+      width: 36px; height: 36px; background: var(--input-bg); border: 1px solid var(--border);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 16px; transition: background 0.2s; position: relative;
+    }
+    .nav-icon-btn:hover { background: rgba(255,255,255,0.1); }
+    .notif-badge {
+      position: absolute; top: -2px; right: -2px; width: 16px; height: 16px;
+      background: var(--c1); border-radius: 50%; font-size: 9px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; color: #fff;
+    }
+    .nav-avatar {
+      width: 36px; height: 36px; background: var(--grad-main); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 14px; cursor: pointer; flex-shrink: 0;
+    }
+
+    /* ── LAYOUT ── */
+    .layout {
+      max-width: 1100px; margin: 0 auto;
+      padding: 76px 1rem 2rem;
+      display: grid;
+      grid-template-columns: 240px 1fr 260px;
+      gap: 1.5rem;
+    }
+
+    /* ── SIDEBAR GAUCHE ── */
+    .sidebar-left { position: sticky; top: 76px; align-self: start; }
+    .nav-menu { list-style: none; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 8px; }
+    .nav-menu li { margin-bottom: 4px; }
+    .nav-menu a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; border-radius: 12px; color: var(--muted);
+      text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s;
+    }
+    .nav-menu a:hover { background: rgba(255,255,255,0.06); color: #fff; }
+    .nav-menu a.active { background: rgba(199,125,255,0.12); color: #C77DFF; }
+    .nav-menu .icon { font-size: 18px; width: 20px; text-align: center; }
+    .menu-badge {
+      margin-left: auto; background: var(--c1); color: #fff;
+      font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 50px;
+    }
+
+    /* ── PROFIL PRINCIPAL ── */
+    .profile-main { min-width: 0; }
+
+    /* Cover + avatar */
+    .cover-wrap {
+      position: relative; border-radius: 20px; overflow: hidden;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+    }
+    .cover-bg {
+      height: 200px;
+      background: linear-gradient(135deg, #0D0D2B 0%, #1a0533 40%, #0a1a3a 100%);
+      position: relative; overflow: hidden;
+    }
+    .cover-particles {
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(199,125,255,0.18) 0%, transparent 50%),
+        radial-gradient(circle at 80% 30%, rgba(77,150,255,0.18) 0%, transparent 50%),
+        radial-gradient(circle at 50% 80%, rgba(255,107,107,0.10) 0%, transparent 50%);
+    }
+    .cover-dots {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+    .cover-edit-btn {
+      position: absolute; top: 12px; right: 12px;
+      background: rgba(13,13,26,0.6); border: 1px solid var(--border);
+      border-radius: 50px; padding: 6px 14px;
+      color: var(--muted); font-size: 12px; font-weight: 500;
+      cursor: pointer; display: flex; align-items: center; gap: 6px;
+      transition: all 0.2s; backdrop-filter: blur(10px);
+    }
+    .cover-edit-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+    .profile-info-bar {
+      background: var(--card);
+      padding: 0 1.5rem 1.25rem;
+      display: flex; align-items: flex-end; gap: 16px;
+    }
+    .profile-avatar-wrap {
+      margin-top: -44px; flex-shrink: 0; position: relative;
+    }
+    .profile-avatar-big {
+      width: 88px; height: 88px;
+      background: var(--grad-main);
+      border-radius: 50%;
+      border: 4px solid var(--card);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Clash Display', sans-serif;
+      font-size: 32px; font-weight: 700;
+    }
+    .avatar-online {
+      position: absolute; bottom: 4px; right: 4px;
+      width: 14px; height: 14px;
+      background: #6BCB77; border-radius: 50%;
+      border: 2px solid var(--card);
+    }
+
+    .profile-text { flex: 1; padding-top: 12px; min-width: 0; }
+    .profile-name {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 22px; font-weight: 700;
+    }
+    .profile-handle { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .profile-badges { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+    .badge {
+      font-size: 11px; font-weight: 600;
+      padding: 3px 10px; border-radius: 50px;
+    }
+    .badge-campus { background: rgba(77,150,255,0.2); color: #4D96FF; }
+    .badge-filiere { background: rgba(199,125,255,0.2); color: #C77DFF; }
+    .badge-annee { background: rgba(107,203,119,0.2); color: #6BCB77; }
+    .badge-delegate { background: rgba(255,217,61,0.2); color: #FFD93D; }
+
+    .profile-actions-top {
+      display: flex; gap: 8px; padding-top: 12px; flex-shrink: 0;
+    }
+    .btn-follow {
+      padding: 9px 22px;
+      background: var(--grad-btn);
+      border: none; border-radius: 50px;
+      color: #fff; font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      box-shadow: 0 4px 15px rgba(199,125,255,0.3);
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-follow:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-follow.following {
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+    .btn-msg {
+      padding: 9px 18px;
+      background: var(--input-bg); border: 1px solid var(--border);
+      border-radius: 50px; color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-msg:hover { background: rgba(255,255,255,0.1); }
+    .btn-more-opt {
+      width: 38px; height: 38px;
+      background: var(--input-bg); border: 1px solid var(--border);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 18px; color: var(--muted);
+      transition: all 0.2s;
+    }
+    .btn-more-opt:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+    /* Stats bar */
+    .profile-stats-bar {
+      display: flex; gap: 0;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .pstat {
+      flex: 1; text-align: center;
+      padding: 14px 8px;
+      border-right: 1px solid var(--border);
+      cursor: pointer; transition: background 0.2s;
+    }
+    .pstat:last-child { border-right: none; }
+    .pstat:hover { background: rgba(255,255,255,0.04); }
+    .pstat-num {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 20px; font-weight: 700;
+      background: var(--grad-main);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .pstat-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    /* Onglets */
+    .profile-tabs {
+      display: flex; gap: 0;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; margin-bottom: 16px;
+      padding: 6px;
+    }
+    .tab-btn {
+      flex: 1; padding: 9px 12px;
+      background: none; border: none;
+      color: var(--muted); font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px; font-weight: 500;
+      border-radius: 12px; cursor: pointer;
+      transition: all 0.2s; text-align: center;
+    }
+    .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.04); }
+    .tab-btn.active {
+      background: rgba(199,125,255,0.15); color: #C77DFF;
+    }
+
+    /* Panneau À propos */
+    .about-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.25rem;
+      margin-bottom: 16px;
+    }
+    .about-title {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 15px; font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .about-bio {
+      font-size: 14px; line-height: 1.65;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 14px;
+    }
+    .about-items { display: flex; flex-direction: column; gap: 10px; }
+    .about-item {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; color: var(--muted);
+    }
+    .about-item span:last-child { color: rgba(255,255,255,0.85); }
+    .about-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+
+    /* Skills / compétences */
+    .skills-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+    .skill-pill {
+      padding: 5px 12px;
+      border-radius: 50px; font-size: 12px; font-weight: 500;
+      border: 1px solid var(--border);
+      background: var(--input-bg); color: rgba(255,255,255,0.75);
+      transition: all 0.2s;
+    }
+    .skill-pill:hover { border-color: rgba(199,125,255,0.4); color: #C77DFF; }
+
+    /* Posts du profil */
+    .post {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1rem; margin-bottom: 12px;
+      animation: fadeInPost 0.4s ease both;
+    }
+    @keyframes fadeInPost {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .post-avatar {
+      width: 42px; height: 42px; flex-shrink: 0; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 700;
+    }
+    .post-meta { flex: 1; }
+    .post-author { font-weight: 600; font-size: 14px; }
+    .post-info { font-size: 12px; color: var(--muted); margin-top: 1px; }
+    .post-more {
+      background: none; border: none; color: var(--muted); font-size: 18px;
+      cursor: pointer; padding: 4px; border-radius: 8px; transition: background 0.2s;
+    }
+    .post-more:hover { background: rgba(255,255,255,0.06); }
+    .post-content { font-size: 14px; line-height: 1.65; color: rgba(255,255,255,0.9); margin-bottom: 12px; }
+    .post-img-placeholder {
+      width: 100%; height: 180px;
+      background: linear-gradient(135deg, rgba(199,125,255,0.12), rgba(77,150,255,0.12));
+      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      font-size: 36px; margin-bottom: 12px;
+    }
+    .post-actions { display: flex; gap: 4px; padding-top: 10px; border-top: 1px solid var(--border); }
+    .action-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 8px; background: none; border: none; color: var(--muted);
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 500;
+      border-radius: 10px; cursor: pointer; transition: all 0.2s;
+    }
+    .action-btn:hover { background: rgba(255,255,255,0.06); color: #fff; }
+    .action-btn.liked { color: #FF6B6B; }
+    .action-btn.liked:hover { background: rgba(255,107,107,0.1); }
+
+    /* Photos grid */
+    .photos-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    }
+    .photo-thumb {
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, rgba(199,125,255,0.15), rgba(77,150,255,0.15));
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      font-size: 28px; cursor: pointer; transition: transform 0.2s, opacity 0.2s;
+      border: 1px solid var(--border);
+    }
+    .photo-thumb:hover { transform: scale(0.97); opacity: 0.8; }
+
+    /* ── SIDEBAR DROITE ── */
+    .sidebar-right { position: sticky; top: 76px; align-self: start; }
+    .widget {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1rem; margin-bottom: 12px;
+    }
+    .widget-title {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 13px; font-weight: 600; margin-bottom: 12px;
+      color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
+    }
+
+    /* Amis communs */
+    .mutual-item {
+      display: flex; align-items: center; gap: 10px; padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .mutual-item:last-child { border-bottom: none; }
+    .mutual-avatar {
+      width: 36px; height: 36px; flex-shrink: 0; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700;
+    }
+    .mutual-info { flex: 1; min-width: 0; }
+    .mutual-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mutual-campus { font-size: 11px; color: var(--muted); }
+
+    /* Groupes communs */
+    .group-item {
+      display: flex; align-items: center; gap: 10px; padding: 8px 0;
+      border-bottom: 1px solid var(--border); cursor: pointer; transition: opacity 0.2s;
+    }
+    .group-item:hover { opacity: 0.8; }
+    .group-item:last-child { border-bottom: none; }
+    .group-icon {
+      width: 38px; height: 38px; flex-shrink: 0; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; font-size: 18px;
+    }
+    .group-info { flex: 1; }
+    .group-name { font-size: 13px; font-weight: 500; }
+    .group-members { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar-left, .sidebar-right { display: none; }
+    }
+    @media (max-width: 600px) {
+      .nav-search { display: none; }
+      .profile-actions-top { flex-wrap: wrap; }
+    }
+
+    /* Tab panels */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Edit modal */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; padding: 1.5rem; width: 100%; max-width: 480px;
+      max-height: 90vh; overflow-y: auto;
+      animation: fadeInPost 0.3s ease;
+    }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .modal-title {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 18px; font-weight: 700;
+    }
+    .modal-close {
+      background: var(--input-bg); border: 1px solid var(--border);
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 16px; color: var(--muted);
+      transition: all 0.2s;
+    }
+    .modal-close:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block; }
+    .form-input {
+      width: 100%; background: var(--input-bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px 14px; color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px;
+      outline: none; transition: border-color 0.2s;
+    }
+    .form-input:focus { border-color: rgba(199,125,255,0.4); }
+    .form-input::placeholder { color: var(--muted); }
+    textarea.form-input { resize: vertical; min-height: 80px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+    .btn-cancel {
+      padding: 9px 20px; background: var(--input-bg); border: 1px solid var(--border);
+      border-radius: 50px; color: var(--muted); font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-cancel:hover { color: #fff; }
+    .btn-save {
+      padding: 9px 24px; background: var(--grad-btn); border: none;
+      border-radius: 50px; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      box-shadow: 0 4px 15px rgba(199,125,255,0.3);
+      transition: opacity 0.2s;
+    }
+    .btn-save:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="dashboard.html" class="nav-logo">
+    <div class="nav-logo-icon">K</div>
+    <span class="nav-logo-txt">KIAI</span>
+  </a>
+  <div class="nav-search">
+    <span class="nav-search-icon">🔍</span>
+    <input type="text" placeholder="Chercher un étudiant, un groupe...">
+  </div>
+  <div class="nav-actions">
+    <div class="nav-icon-btn" title="Messagerie">💬<span class="notif-badge">3</span></div>
+    <div class="nav-icon-btn" title="Notifications">🔔<span class="notif-badge">7</span></div>
+    <div class="nav-avatar" id="nav-avatar">H</div>
+  </div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR GAUCHE -->
+  <aside class="sidebar-left">
+    <ul class="nav-menu">
+      <li><a href="dashboard.html"><span class="icon">🏠</span> Fil d'actualité</a></li>
+      <li><a href="profil.html" class="active"><span class="icon">👤</span> Mon profil</a></li>
+      <li><a href="#"><span class="icon">💬</span> Messagerie <span class="menu-badge">3</span></a></li>
+      <li><a href="#"><span class="icon">👥</span> Groupes</a></li>
+      <li><a href="notifications.html"><span class="icon">🔔</span> Notifications <span class="menu-badge">7</span></a></li>
+      <li><a href="decouvrir.html"><span class="icon">🔍</span> Découvrir</a></li>
+      <li><a href="parametres.html"><span class="icon">⚙️</span> Paramètres</a></li>
+      <li><a href="index.html"><span class="icon">🚪</span> Déconnexion</a></li>
+    </ul>
+  </aside>
+
+  <!-- PROFIL PRINCIPAL -->
+  <main class="profile-main">
+
+    <!-- Cover + infos -->
+    <div class="cover-wrap">
+      <div class="cover-bg">
+        <div class="cover-particles"></div>
+        <div class="cover-dots"></div>
+        <button class="cover-edit-btn" onclick="openEditModal()">✏️ Modifier le profil</button>
+      </div>
+      <div class="profile-info-bar">
+        <div class="profile-avatar-wrap">
+          <div class="profile-avatar-big" id="profile-avatar-big">H</div>
+          <div class="avatar-online"></div>
+        </div>
+        <div class="profile-text">
+          <div class="profile-name" id="profile-fullname">Henri Michel Nkodo</div>
+          <div class="profile-handle" id="profile-handle">@henri.nkodo · Keyce Informatique</div>
+          <div class="profile-badges">
+            <span class="badge badge-campus">📍 Yaoundé</span>
+            <span class="badge badge-filiere">💻 Informatique</span>
+            <span class="badge badge-annee">🎓 L3</span>
+            <span class="badge badge-delegate">⭐ Délégué de classe</span>
+          </div>
+        </div>
+        <div class="profile-actions-top" id="profile-actions-top">
+          <!-- Actions modifiées selon si c'est son propre profil ou pas -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="profile-stats-bar">
+      <div class="pstat">
+        <div class="pstat-num" id="stat-posts">38</div>
+        <div class="pstat-lbl">Publications</div>
+      </div>
+      <div class="pstat">
+        <div class="pstat-num" id="stat-amis">124</div>
+        <div class="pstat-lbl">Amis</div>
+      </div>
+      <div class="pstat">
+        <div class="pstat-num">12</div>
+        <div class="pstat-lbl">Groupes</div>
+      </div>
+      <div class="pstat">
+        <div class="pstat-num">847</div>
+        <div class="pstat-lbl">J'aime reçus</div>
+      </div>
+    </div>
+
+    <!-- Onglets -->
+    <div class="profile-tabs">
+      <button class="tab-btn active" onclick="switchTab('posts', this)">📝 Publications</button>
+      <button class="tab-btn" onclick="switchTab('about', this)">👤 À propos</button>
+      <button class="tab-btn" onclick="switchTab('photos', this)">📷 Photos</button>
+      <button class="tab-btn" onclick="switchTab('amis', this)">👥 Amis</button>
+    </div>
+
+    <!-- ONGLET POSTS -->
+    <div class="tab-panel active" id="panel-posts">
+      <div id="profile-posts-container"></div>
+    </div>
+
+    <!-- ONGLET À PROPOS -->
+    <div class="tab-panel" id="panel-about">
+      <div class="about-card">
+        <div class="about-title">Bio</div>
+        <div class="about-bio" id="about-bio">
+          Étudiant passionné en L3 Informatique à Keyce Yaoundé. Développeur web & mobile, féru d'intelligence artificielle et de design UI/UX. Délégué de ma promo, j'aime connecter les gens et partager des ressources utiles 🚀
+        </div>
+        <div class="about-items">
+          <div class="about-item">
+            <span class="about-icon">🏫</span>
+            <span>École :</span>
+            <span>Keyce Business & Tech School – Yaoundé</span>
+          </div>
+          <div class="about-item">
+            <span class="about-icon">📚</span>
+            <span>Filière :</span>
+            <span>Licence Informatique (L3)</span>
+          </div>
+          <div class="about-item">
+            <span class="about-icon">📅</span>
+            <span>Promo :</span>
+            <span>2022 – 2025</span>
+          </div>
+          <div class="about-item">
+            <span class="about-icon">🏙️</span>
+            <span>Ville :</span>
+            <span>Yaoundé, Cameroun</span>
+          </div>
+          <div class="about-item">
+            <span class="about-icon">✉️</span>
+            <span>Email :</span>
+            <span>henri.nkodo@keyce-cm.edu</span>
+          </div>
+          <div class="about-item">
+            <span class="about-icon">🔗</span>
+            <span>LinkedIn :</span>
+            <span style="color:#4D96FF">linkedin.com/in/henrinkodo</span>
+          </div>
+        </div>
+        <div class="about-title" style="margin-top:18px; margin-bottom:10px;">Compétences</div>
+        <div class="skills-wrap" id="skills-list">
+          <span class="skill-pill">JavaScript</span>
+          <span class="skill-pill">React</span>
+          <span class="skill-pill">PHP / Laravel</span>
+          <span class="skill-pill">MySQL</span>
+          <span class="skill-pill">Python</span>
+          <span class="skill-pill">UI/UX Design</span>
+          <span class="skill-pill">Figma</span>
+          <span class="skill-pill">Node.js</span>
+          <span class="skill-pill">Git / GitHub</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ONGLET PHOTOS -->
+    <div class="tab-panel" id="panel-photos">
+      <div class="about-card">
+        <div class="about-title">Photos & médias</div>
+        <div class="photos-grid">
+          <div class="photo-thumb">🖼️</div>
+          <div class="photo-thumb">📸</div>
+          <div class="photo-thumb">🎓</div>
+          <div class="photo-thumb">💻</div>
+          <div class="photo-thumb">🎉</div>
+          <div class="photo-thumb">🏫</div>
+          <div class="photo-thumb">🌍</div>
+          <div class="photo-thumb">🤝</div>
+          <div class="photo-thumb">🚀</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ONGLET AMIS -->
+    <div class="tab-panel" id="panel-amis">
+      <div class="about-card">
+        <div class="about-title">Amis (124)</div>
+        <div id="amis-grid" style="display:grid; grid-template-columns: repeat(2,1fr); gap: 10px;"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- SIDEBAR DROITE -->
+  <aside class="sidebar-right">
+
+    <div class="widget">
+      <div class="widget-title">Amis en commun</div>
+      <div id="mutuals-container"></div>
+    </div>
+
+    <div class="widget">
+      <div class="widget-title">Groupes en commun</div>
+      <div id="groups-container"></div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- MODAL ÉDITION PROFIL -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Modifier le profil</div>
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Prénom</label>
+        <input class="form-input" id="edit-prenom" type="text" value="Henri Michel">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nom</label>
+        <input class="form-input" id="edit-nom" type="text" value="Nkodo">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Bio</label>
+      <textarea class="form-input" id="edit-bio">Étudiant passionné en L3 Informatique à Keyce Yaoundé. Développeur web & mobile, féru d'intelligence artificielle et de design UI/UX. Délégué de ma promo, j'aime connecter les gens et partager des ressources utiles 🚀</textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Campus</label>
+        <select class="form-input" id="edit-campus">
+          <option value="Yaoundé" selected>Yaoundé</option>
+          <option value="Douala">Douala</option>
+          <option value="Bafoussam">Bafoussam</option>
+          <option value="Ngounde">Ngounde</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Filière</label>
+        <input class="form-input" id="edit-filiere" type="text" value="Informatique">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Niveau</label>
+        <select class="form-input" id="edit-niveau">
+          <option>L1</option><option>L2</option><option selected>L3</option>
+          <option>M1</option><option>M2</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ville</label>
+        <input class="form-input" id="edit-ville" type="text" value="Yaoundé">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">LinkedIn</label>
+      <input class="form-input" id="edit-linkedin" type="text" placeholder="linkedin.com/in/..." value="linkedin.com/in/henrinkodo">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Compétences (séparées par des virgules)</label>
+      <input class="form-input" id="edit-skills" type="text" value="JavaScript, React, PHP / Laravel, MySQL, Python, UI/UX Design, Figma, Node.js, Git / GitHub">
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeEditModal()">Annuler</button>
+      <button class="btn-save" onclick="saveProfile()">💾 Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── DONNÉES ──
+  const IS_OWN_PROFILE = true; // Passer à false pour voir le profil d'un autre
+
+  const DEMO_PROFILE_POSTS = [
+    {
+      id: 1,
+      contenu: '🚀 On vient de finir de présenter notre projet de réseau social en cours de développement web. L\'ambiance était 🔥 ! Fier de mon équipe. À bientôt les collègues de Douala et Bafoussam ! 💪 #ProjetInformatique #TeamWork',
+      time: 'Il y a 2h', hasImg: true, likes: 67, comments: 15, liked: true
+    },
+    {
+      id: 2,
+      contenu: '📚 Révisions intenses pour les partiels de cette semaine. Qui a les résumés du cours de Systèmes d\'exploitation du Prof. Ndomo ? 🙏 #Examens2025 #KeyceYaounde',
+      time: 'Il y a 1j', hasImg: false, likes: 34, comments: 9, liked: false
+    },
+    {
+      id: 3,
+      contenu: '🎓 Assemblée générale des délégués aujourd\'hui à Keyce Yaoundé. On a discuté des emplois du temps du second semestre et de la semaine culturelle. Merci à tous les délégués présents ! #VieEtudiante',
+      time: 'Il y a 3j', hasImg: false, likes: 89, comments: 22, liked: false
+    },
+  ];
+
+  const DEMO_MUTUALS = [
+    { nom: 'Amina Bello', initiales: 'AB', campus: 'Keyce Douala', grad: 'linear-gradient(135deg,#FF6B6B,#FFD93D)' },
+    { nom: 'Kevin Fouda', initiales: 'KF', campus: 'Keyce Yaoundé', grad: 'linear-gradient(135deg,#4D96FF,#C77DFF)' },
+    { nom: 'Christelle Mbarga', initiales: 'CM', campus: 'Keyce Bafoussam', grad: 'linear-gradient(135deg,#6BCB77,#4D96FF)' },
+  ];
+
+  const DEMO_GROUPS = [
+    { nom: 'Devs Keyce 🇨🇲', membres: '234 membres', icon: '💻', bg: 'rgba(77,150,255,0.15)' },
+    { nom: 'Délégués 2024-25', membres: '18 membres', icon: '⭐', bg: 'rgba(255,217,61,0.15)' },
+    { nom: 'PFE & Stages', membres: '412 membres', icon: '🎓', bg: 'rgba(107,203,119,0.15)' },
+  ];
+
+  const DEMO_AMIS = [
+    { nom: 'Amina Bello', initiales: 'AB', campus: 'Douala', grad: 'linear-gradient(135deg,#FF6B6B,#FFD93D)' },
+    { nom: 'Kevin Fouda', initiales: 'KF', campus: 'Yaoundé', grad: 'linear-gradient(135deg,#4D96FF,#C77DFF)' },
+    { nom: 'Christelle M.', initiales: 'CM', campus: 'Bafoussam', grad: 'linear-gradient(135deg,#6BCB77,#4D96FF)' },
+    { nom: 'Paul Njike', initiales: 'PN', campus: 'Ngounde', grad: 'linear-gradient(135deg,#FFD93D,#FF6B6B)' },
+    { nom: 'Sara Ondo', initiales: 'SO', campus: 'Douala', grad: 'linear-gradient(135deg,#C77DFF,#4D96FF)' },
+    { nom: 'Marc Tchinda', initiales: 'MT', campus: 'Bafoussam', grad: 'linear-gradient(135deg,#6BCB77,#FFD93D)' },
+  ];
+
+  // ── BOUTONS D'ACTION selon propriétaire ──
+  const actionsTop = document.getElementById('profile-actions-top');
+  if (IS_OWN_PROFILE) {
+    actionsTop.innerHTML = `
+      <button class="btn-follow" onclick="openEditModal()">✏️ Modifier le profil</button>`;
+  } else {
+    actionsTop.innerHTML = `
+      <button class="btn-follow" id="follow-btn" onclick="toggleFollow()">+ Suivre</button>
+      <button class="btn-msg">💬 Message</button>
+      <button class="btn-more-opt">⋯</button>`;
+  }
+
+  // ── TOGGLE FOLLOW ──
+  let isFollowing = false;
+  function toggleFollow() {
+    isFollowing = !isFollowing;
+    const btn = document.getElementById('follow-btn');
+    if (btn) {
+      btn.textContent = isFollowing ? '✅ Suivi' : '+ Suivre';
+      btn.classList.toggle('following', isFollowing);
+      const stat = document.getElementById('stat-amis');
+      stat.textContent = isFollowing ? parseInt(stat.textContent) + 1 : parseInt(stat.textContent) - 1;
+    }
+  }
+
+  // ── RENDER POSTS ──
+  function renderProfilePosts() {
+    const container = document.getElementById('profile-posts-container');
+    container.innerHTML = '';
+    DEMO_PROFILE_POSTS.forEach((p, i) => {
+      container.innerHTML += `
+        <div class="post" style="animation-delay:${i*0.08}s">
+          <div class="post-header">
+            <div class="post-avatar" style="background:linear-gradient(135deg,#4D96FF,#C77DFF);color:#fff;">H</div>
+            <div class="post-meta">
+              <div class="post-author">Henri Michel Nkodo</div>
+              <div class="post-info">${p.time}</div>
+            </div>
+            <button class="post-more">⋯</button>
+          </div>
+          <div class="post-content">${p.contenu}</div>
+          ${p.hasImg ? `<div class="post-img-placeholder">🖼️ Photo du projet</div>` : ''}
+          <div class="post-actions">
+            <button class="action-btn ${p.liked ? 'liked' : ''}" onclick="toggleLike(this,${p.id})">
+              ${p.liked ? '❤️' : '🤍'} <span class="like-count">${p.likes}</span>
+            </button>
+            <button class="action-btn">💬 ${p.comments}</button>
+            <button class="action-btn">↗️ Partager</button>
+          </div>
+        </div>`;
+    });
+  }
+
+  function toggleLike(btn, postId) {
+    const post = DEMO_PROFILE_POSTS.find(p => p.id === postId);
+    if (!post) return;
+    post.liked = !post.liked;
+    post.likes += post.liked ? 1 : -1;
+    btn.classList.toggle('liked', post.liked);
+    btn.querySelector('.like-count').textContent = post.likes;
+    btn.firstChild.textContent = post.liked ? '❤️ ' : '🤍 ';
+  }
+
+  // ── RENDER MUTUALS ──
+  const mutualsContainer = document.getElementById('mutuals-container');
+  DEMO_MUTUALS.forEach(m => {
+    mutualsContainer.innerHTML += `
+      <div class="mutual-item">
+        <div class="mutual-avatar" style="background:${m.grad};color:#fff;">${m.initiales}</div>
+        <div class="mutual-info">
+          <div class="mutual-name">${m.nom}</div>
+          <div class="mutual-campus">${m.campus}</div>
+        </div>
+      </div>`;
+  });
+
+  // ── RENDER GROUPS ──
+  const groupsContainer = document.getElementById('groups-container');
+  DEMO_GROUPS.forEach(g => {
+    groupsContainer.innerHTML += `
+      <div class="group-item">
+        <div class="group-icon" style="background:${g.bg}">${g.icon}</div>
+        <div class="group-info">
+          <div class="group-name">${g.nom}</div>
+          <div class="group-members">${g.membres}</div>
+        </div>
+      </div>`;
+  });
+
+  // ── RENDER AMIS ──
+  const amisGrid = document.getElementById('amis-grid');
+  DEMO_AMIS.forEach(a => {
+    amisGrid.innerHTML += `
+      <div style="display:flex; align-items:center; gap:10px; background:var(--input-bg); border:1px solid var(--border); border-radius:12px; padding:10px;">
+        <div style="width:40px;height:40px;flex-shrink:0;border-radius:50%;background:${a.grad};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">${a.initiales}</div>
+        <div>
+          <div style="font-size:13px;font-weight:600;">${a.nom}</div>
+          <div style="font-size:11px;color:var(--muted);">${a.campus}</div>
+        </div>
+      </div>`;
+  });
+
+  // ── TABS ──
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + name).classList.add('active');
+  }
+
+  // ── MODAL EDIT ──
+  function openEditModal() {
+    document.getElementById('edit-modal').classList.add('open');
+  }
+  function closeEditModal() {
+    document.getElementById('edit-modal').classList.remove('open');
+  }
+  document.getElementById('edit-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeEditModal();
+  });
+
+  function saveProfile() {
+    const prenom = document.getElementById('edit-prenom').value.trim();
+    const nom = document.getElementById('edit-nom').value.trim();
+    const bio = document.getElementById('edit-bio').value.trim();
+    const skills = document.getElementById('edit-skills').value.split(',').map(s => s.trim()).filter(Boolean);
+
+    if (prenom && nom) {
+      const fullname = prenom + ' ' + nom;
+      document.getElementById('profile-fullname').textContent = fullname;
+      document.getElementById('profile-handle').textContent = '@' + prenom.toLowerCase() + '.' + nom.toLowerCase() + ' · Keyce Informatique';
+      document.getElementById('nav-avatar').textContent = (prenom[0] + nom[0]).toUpperCase();
+      document.getElementById('profile-avatar-big').textContent = (prenom[0] + nom[0]).toUpperCase();
+    }
+
+    if (bio) document.getElementById('about-bio').textContent = bio;
+
+    const skillsList = document.getElementById('skills-list');
+    skillsList.innerHTML = skills.map(s => `<span class="skill-pill">${s}</span>`).join('');
+
+    closeEditModal();
+  }
+
+  // ── INIT ──
+  renderProfilePosts();
+</script>
+</body>
+</html>
