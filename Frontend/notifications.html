@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyce KIAI — Notifications</title>
+  <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --c1:#FF6B6B;--c2:#FFD93D;--c3:#6BCB77;--c4:#4D96FF;--c5:#C77DFF;
+      --grad-main:linear-gradient(135deg,#FF6B6B 0%,#C77DFF 50%,#4D96FF 100%);
+      --grad-btn:linear-gradient(135deg,#FF6B6B,#C77DFF);
+      --dark:#0D0D1A;--card:#191930;--border:rgba(255,255,255,0.08);
+      --text:#ffffff;--muted:rgba(255,255,255,0.5);--input-bg:rgba(255,255,255,0.06);
+    }
+    html,body{min-height:100%;background:var(--dark);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;}
+    .navbar{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;background:rgba(13,13,26,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.5rem;gap:1rem;}
+    .nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0;}
+    .nav-logo-icon{width:32px;height:32px;background:var(--grad-main);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Clash Display',sans-serif;font-size:16px;font-weight:700;color:#fff;}
+    .nav-logo-txt{font-family:'Clash Display',sans-serif;font-size:18px;font-weight:700;background:var(--grad-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .nav-search{flex:1;max-width:360px;margin:0 auto;position:relative;}
+    .nav-search input{width:100%;background:var(--input-bg);border:1px solid var(--border);border-radius:50px;padding:8px 16px 8px 36px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;}
+    .nav-search input::placeholder{color:var(--muted);}
+    .nav-search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);}
+    .nav-actions{display:flex;align-items:center;gap:8px;margin-left:auto;}
+    .nav-icon-btn{width:36px;height:36px;background:var(--input-bg);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;position:relative;}
+    .notif-badge{position:absolute;top:-2px;right:-2px;width:16px;height:16px;background:var(--c1);border-radius:50%;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#fff;}
+    .nav-avatar{width:36px;height:36px;background:var(--grad-main);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;cursor:pointer;}
+    .layout{max-width:1100px;margin:0 auto;padding:76px 1rem 2rem;display:grid;grid-template-columns:240px 1fr 260px;gap:1.5rem;}
+    .sidebar-left{position:sticky;top:76px;align-self:start;}
+    .nav-menu{list-style:none;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:8px;}
+    .nav-menu li{margin-bottom:4px;}
+    .nav-menu a{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;transition:all 0.2s;}
+    .nav-menu a:hover{background:rgba(255,255,255,0.06);color:#fff;}
+    .nav-menu a.active{background:rgba(199,125,255,0.12);color:#C77DFF;}
+    .nav-menu .icon{font-size:18px;width:20px;text-align:center;}
+    .menu-badge{margin-left:auto;background:var(--c1);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:50px;}
+    .notif-main{min-width:0;}
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+    .page-title{font-family:'Clash Display',sans-serif;font-size:24px;font-weight:700;}
+    .mark-all-btn{padding:8px 18px;background:var(--input-bg);border:1px solid var(--border);border-radius:50px;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s;}
+    .mark-all-btn:hover{color:#fff;}
+    .notif-filters{display:flex;gap:6px;margin-bottom:1rem;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+    .notif-filters::-webkit-scrollbar{display:none;}
+    .filter-pill{flex-shrink:0;padding:7px 16px;background:var(--card);border:1px solid var(--border);border-radius:50px;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+    .filter-pill.active{background:var(--grad-btn);border-color:transparent;color:#fff;box-shadow:0 4px 15px rgba(199,125,255,0.3);}
+    .notif-group{margin-bottom:1.25rem;}
+    .notif-group-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:8px;padding-left:4px;}
+    .notif-item{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all 0.2s;position:relative;animation:fadeIn 0.35s ease both;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+    .notif-item:hover{border-color:rgba(255,255,255,0.14);}
+    .notif-item.unread{border-left:3px solid var(--c5);}
+    .unread-dot{position:absolute;top:14px;right:14px;width:8px;height:8px;background:var(--c5);border-radius:50%;}
+    .notif-avatar-wrap{position:relative;flex-shrink:0;}
+    .notif-avatar{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;}
+    .notif-type-icon{position:absolute;bottom:-2px;right:-2px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid var(--card);}
+    .icon-like{background:#FF6B6B;}.icon-comment{background:#4D96FF;}.icon-follow{background:#6BCB77;}.icon-mention{background:#C77DFF;}.icon-group{background:#FFD93D;}
+    .notif-body{flex:1;min-width:0;}
+    .notif-text{font-size:14px;line-height:1.5;color:rgba(255,255,255,0.85);}
+    .notif-text strong{color:#fff;font-weight:600;}
+    .notif-time{font-size:12px;color:var(--muted);margin-top:4px;}
+    .notif-preview{font-size:13px;color:var(--muted);background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .notif-action-btns{display:flex;gap:6px;margin-top:10px;}
+    .notif-btn{padding:6px 14px;border-radius:50px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;border:none;}
+    .notif-btn-accept{background:rgba(107,203,119,0.2);color:#6BCB77;border:1px solid rgba(107,203,119,0.3);}
+    .notif-btn-accept:hover{background:rgba(107,203,119,0.35);}
+    .notif-btn-decline{background:var(--input-bg);color:var(--muted);border:1px solid var(--border);}
+    .notif-btn-decline:hover{color:#fff;}
+    .empty-state{text-align:center;padding:3rem 1rem;color:var(--muted);}
+    .empty-icon{font-size:48px;margin-bottom:12px;}
+    .sidebar-right{position:sticky;top:76px;align-self:start;}
+    .widget{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1rem;margin-bottom:12px;}
+    .widget-title{font-family:'Clash Display',sans-serif;font-size:13px;font-weight:600;margin-bottom:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;}
+    .notif-pref-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);}
+    .notif-pref-item:last-child{border-bottom:none;}
+    .notif-pref-label{font-size:13px;}
+    .toggle{width:36px;height:20px;background:rgba(255,255,255,0.1);border-radius:10px;position:relative;cursor:pointer;transition:background 0.2s;flex-shrink:0;}
+    .toggle.on{background:linear-gradient(135deg,#6BCB77,#4D96FF);}
+    .toggle::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform 0.2s;}
+    .toggle.on::after{transform:translateX(16px);}
+    .summary-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+    .summary-row:last-child{margin-bottom:0;}
+    .summary-val{font-weight:700;font-size:15px;background:var(--grad-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    @media(max-width:900px){.layout{grid-template-columns:1fr;}.sidebar-left,.sidebar-right{display:none;}}
+    @media(max-width:600px){.nav-search{display:none;}}
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="dashboard.html" class="nav-logo"><div class="nav-logo-icon">K</div><span class="nav-logo-txt">KIAI</span></a>
+  <div class="nav-search"><span class="nav-search-icon">🔍</span><input type="text" placeholder="Chercher un étudiant, un groupe..."></div>
+  <div class="nav-actions">
+    <div class="nav-icon-btn">💬<span class="notif-badge">3</span></div>
+    <div class="nav-icon-btn">🔔<span class="notif-badge" id="main-badge">7</span></div>
+    <div class="nav-avatar">H</div>
+  </div>
+</nav>
+
+<div class="layout">
+  <aside class="sidebar-left">
+    <ul class="nav-menu">
+      <li><a href="dashboard.html"><span class="icon">🏠</span> Fil d'actualité</a></li>
+      <li><a href="profil.html"><span class="icon">👤</span> Mon profil</a></li>
+      <li><a href="#"><span class="icon">💬</span> Messagerie <span class="menu-badge">3</span></a></li>
+      <li><a href="#"><span class="icon">👥</span> Groupes</a></li>
+      <li><a href="notifications.html" class="active"><span class="icon">🔔</span> Notifications <span class="menu-badge">7</span></a></li>
+      <li><a href="decouvrir.html"><span class="icon">🔍</span> Découvrir</a></li>
+      <li><a href="parametres.html"><span class="icon">⚙️</span> Paramètres</a></li>
+      <li><a href="index.html"><span class="icon">🚪</span> Déconnexion</a></li>
+    </ul>
+  </aside>
+
+  <main class="notif-main">
+    <div class="page-header">
+      <div class="page-title">🔔 Notifications</div>
+      <button class="mark-all-btn" onclick="markAllRead()">✓ Tout marquer comme lu</button>
+    </div>
+    <div class="notif-filters">
+      <div class="filter-pill active" onclick="filterNotifs('all',this)">🌍 Toutes</div>
+      <div class="filter-pill" onclick="filterNotifs('like',this)">❤️ J'aime</div>
+      <div class="filter-pill" onclick="filterNotifs('comment',this)">💬 Commentaires</div>
+      <div class="filter-pill" onclick="filterNotifs('follow',this)">👥 Abonnements</div>
+      <div class="filter-pill" onclick="filterNotifs('mention',this)">@ Mentions</div>
+      <div class="filter-pill" onclick="filterNotifs('group',this)">🏘️ Groupes</div>
+    </div>
+    <div id="notifs-container"></div>
+  </main>
+
+  <aside class="sidebar-right">
+    <div class="widget">
+      <div class="widget-title">Préférences 🔔</div>
+      <div class="notif-pref-item"><span class="notif-pref-label">❤️ J'aime</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="notif-pref-item"><span class="notif-pref-label">💬 Commentaires</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="notif-pref-item"><span class="notif-pref-label">@ Mentions</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="notif-pref-item"><span class="notif-pref-label">👥 Nouveaux abonnés</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="notif-pref-item"><span class="notif-pref-label">🏘️ Groupes</span><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+      <div class="notif-pref-item"><span class="notif-pref-label">📢 Annonces campus</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+    <div class="widget">
+      <div class="widget-title">Résumé aujourd'hui</div>
+      <div class="summary-row"><span style="font-size:13px;color:var(--muted)">❤️ J'aime reçus</span><span class="summary-val">+47</span></div>
+      <div class="summary-row"><span style="font-size:13px;color:var(--muted)">💬 Commentaires</span><span class="summary-val">+12</span></div>
+      <div class="summary-row"><span style="font-size:13px;color:var(--muted)">👥 Nouveaux abonnés</span><span class="summary-val">+5</span></div>
+    </div>
+  </aside>
+</div>
+
+<script>
+const NOTIFS=[
+  {id:1,type:'like',unread:true,av:'AB',gr:'linear-gradient(135deg,#FF6B6B,#FFD93D)',text:'<strong>Amina Bello</strong> a aimé votre publication sur le projet de réseau social.',time:'Il y a 5 min',preview:'🚀 On vient de finir de présenter notre projet...'},
+  {id:2,type:'comment',unread:true,av:'KF',gr:'linear-gradient(135deg,#4D96FF,#C77DFF)',text:'<strong>Kevin Fouda</strong> a commenté : "Incroyable ce projet, bravo ! 🔥"',time:'Il y a 12 min',preview:'🚀 On vient de finir de présenter notre projet...'},
+  {id:3,type:'follow',unread:true,av:'CM',gr:'linear-gradient(135deg,#6BCB77,#4D96FF)',text:'<strong>Christelle Mbarga</strong> a commencé à vous suivre.',time:'Il y a 28 min',action:'follow'},
+  {id:4,type:'mention',unread:true,av:'PN',gr:'linear-gradient(135deg,#FFD93D,#FF6B6B)',text:'<strong>Paul Njike</strong> vous a mentionné dans une publication.',time:'Il y a 45 min',preview:'Merci à @henri.nkodo pour les ressources partagées !'},
+  {id:5,type:'like',unread:true,av:'SO',gr:'linear-gradient(135deg,#C77DFF,#4D96FF)',text:'<strong>Sara Ondo</strong> et <strong>3 autres</strong> ont aimé votre publication.',time:'Il y a 1h',preview:'📚 Révisions intenses pour les partiels...'},
+  {id:6,type:'group',unread:true,av:'MT',gr:'linear-gradient(135deg,#6BCB77,#FFD93D)',text:'<strong>Marc Tchinda</strong> vous a invité à rejoindre <strong>"PFE & Stages 2025"</strong>.',time:'Il y a 2h',action:'group'},
+  {id:7,type:'comment',unread:false,av:'AB',gr:'linear-gradient(135deg,#FF6B6B,#FFD93D)',text:'<strong>Amina Bello</strong> a répondu à votre commentaire.',time:'Il y a 3h',preview:'Exactement ! Les requêtes imbriquées c\'est tricky...'},
+  {id:8,type:'like',unread:false,av:'KF',gr:'linear-gradient(135deg,#4D96FF,#C77DFF)',text:'<strong>Kevin Fouda</strong> a aimé votre commentaire.',time:'Il y a 5h'},
+  {id:9,type:'follow',unread:false,av:'LE',gr:'linear-gradient(135deg,#FF6B6B,#C77DFF)',text:'<strong>Laure Essama</strong> a commencé à vous suivre.',time:'Hier',action:'follow'},
+  {id:10,type:'mention',unread:false,av:'CM',gr:'linear-gradient(135deg,#6BCB77,#4D96FF)',text:'<strong>Christelle Mbarga</strong> vous a mentionné dans un commentaire.',time:'Hier',preview:'Pareil que @henri.nkodo, très bonne initiative !'},
+];
+const ICONS={like:{i:'❤️',c:'icon-like'},comment:{i:'💬',c:'icon-comment'},follow:{i:'➕',c:'icon-follow'},mention:{i:'@',c:'icon-mention'},group:{i:'👥',c:'icon-group'}};
+let curFilter='all';
+
+function buildItem(n,idx){
+  const ti=ICONS[n.type]||ICONS.like;
+  let actions='';
+  if(n.action==='follow') actions=`<div class="notif-action-btns"><button class="notif-btn notif-btn-accept" onclick="event.stopPropagation();this.closest('.notif-action-btns').innerHTML='<span style=color:#6BCB77>✓ Suivi en retour</span>'">✓ Suivre en retour</button><button class="notif-btn notif-btn-decline" onclick="event.stopPropagation();this.closest('.notif-action-btns').innerHTML='<span style=color:var(--muted)>Ignoré</span>'">Ignorer</button></div>`;
+  if(n.action==='group') actions=`<div class="notif-action-btns"><button class="notif-btn notif-btn-accept" onclick="event.stopPropagation();this.closest('.notif-action-btns').innerHTML='<span style=color:#6BCB77>✓ Rejoint !</span>'">✓ Rejoindre</button><button class="notif-btn notif-btn-decline" onclick="event.stopPropagation();this.closest('.notif-action-btns').innerHTML='<span style=color:var(--muted)>Refusé</span>'">Refuser</button></div>`;
+  return `<div class="notif-item ${n.unread?'unread':''}" style="animation-delay:${idx*0.06}s" onclick="markRead(${n.id})">
+    ${n.unread?'<div class="unread-dot"></div>':''}
+    <div class="notif-avatar-wrap">
+      <div class="notif-avatar" style="background:${n.gr};color:#fff">${n.av}</div>
+      <div class="notif-type-icon ${ti.c}">${ti.i}</div>
+    </div>
+    <div class="notif-body">
+      <div class="notif-text">${n.text}</div>
+      <div class="notif-time">${n.time}</div>
+      ${n.preview?`<div class="notif-preview">${n.preview}</div>`:''}
+      ${actions}
+    </div>
+  </div>`;
+}
+
+function renderNotifs(filter='all'){
+  const c=document.getElementById('notifs-container');
+  const list=filter==='all'?NOTIFS:NOTIFS.filter(n=>n.type===filter);
+  const unread=list.filter(n=>n.unread), read=list.filter(n=>!n.unread);
+  if(!list.length){c.innerHTML='<div class="empty-state"><div class="empty-icon">🔔</div><div>Aucune notification ici</div></div>';return;}
+  let html='';
+  if(unread.length){html+=`<div class="notif-group"><div class="notif-group-label">Nouvelles (${unread.length})</div>`;unread.forEach((n,i)=>html+=buildItem(n,i));html+='</div>';}
+  if(read.length){html+=`<div class="notif-group"><div class="notif-group-label">Vues</div>`;read.forEach((n,i)=>html+=buildItem(n,i+unread.length));html+='</div>';}
+  c.innerHTML=html;
+}
+function markRead(id){const n=NOTIFS.find(n=>n.id===id);if(n&&n.unread){n.unread=false;renderNotifs(curFilter);updateBadge();}}
+function markAllRead(){NOTIFS.forEach(n=>n.unread=false);renderNotifs(curFilter);updateBadge();}
+function updateBadge(){const cnt=NOTIFS.filter(n=>n.unread).length;const b=document.getElementById('main-badge');if(b)b.textContent=cnt||'';}
+function filterNotifs(type,btn){curFilter=type;document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');renderNotifs(type);}
+renderNotifs();
+</script>
+</body>
+</html>
