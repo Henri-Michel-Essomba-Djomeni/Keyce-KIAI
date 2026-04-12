@@ -102,7 +102,7 @@ body::before {
     position: relative;
     z-index: 1;
     width: 100%;
-    max-width: 460px;
+    max-width: 1400px;
     animation: fadeInUp 0.7s var(--ease-out) both;
 }
 
@@ -124,8 +124,35 @@ body::before {
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-lg);
-    padding: 2.5rem 2rem;
+    padding: 2rem;
     box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Layout Grid --- */
+.layout-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 1100px) {
+    .layout-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .layout-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .container {
+        max-width: 500px;
+    }
 }
 
 /* --- Header --- */
@@ -430,9 +457,9 @@ body::before {
 
 /* --- Section Membres --- */
 .members-section {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .members-header {
@@ -647,9 +674,9 @@ body::before {
 
 /* --- Section Groupes --- */
 .groups-section {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .groups-header {
