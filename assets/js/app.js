@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const GET_MEMBRES_URL = '/Keyce-KIAI/get_membres.php';
     const CREATE_GROUP_URL = '/Keyce-KIAI/create_group.php';
     const GET_GROUPS_URL = '/Keyce-KIAI/get_groups.php';
+    const CHAT_URL_BASE = '/Keyce-KIAI/chat.php'; // À adapter selon le travail de votre camarade
 
     // =========================================================
     //  VALIDATION
@@ -304,6 +305,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h3>${membre.nom} ${membre.prenom}</h3>
                     <p>${membre.telephone}</p>
                 </div>
+                <button class="btn-chat" title="Envoyer un message" data-id="${membre.id}" data-type="member">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                    </svg>
+                </button>
                 <div class="member-date">
                     ${new Date(membre.date_creation).toLocaleDateString('fr-FR')}
                 </div>
@@ -498,16 +504,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (groupSelectionMode) {
             groupsList.classList.add('selection-mode');
             selectGroupsBtn.classList.add('active');
-            selectGroupsBtnText.textContent = 'Annuler';
+            if (selectGroupsBtnText) selectGroupsBtnText.textContent = 'Annuler';
             selectionActionsGroups.style.display = 'flex';
-            renderGroups(allGroups); // Re-render to show checkboxes
         } else {
             groupsList.classList.remove('selection-mode');
             selectGroupsBtn.classList.remove('active');
-            selectGroupsBtnText.textContent = 'Sélectionner';
+            if (selectGroupsBtnText) selectGroupsBtnText.textContent = 'Sélectionner';
             selectionActionsGroups.style.display = 'none';
+            // Désélectionner tout
             selectedGroupIds.clear();
-            renderGroups(allGroups); // Re-render to hide checkboxes
+            document.querySelectorAll('.group-item.selected').forEach(item => {
+                item.classList.remove('selected');
+            });
+            document.querySelectorAll('.group-checkbox').forEach(cb => {
+                cb.checked = false;
+            });
         }
     }
 
@@ -518,8 +529,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const groupsList = document.getElementById('groups-list');
         const refreshGroupsBtn = document.getElementById('refresh-groups-btn');
 
+        // Afficher le chargement
         groupsList.innerHTML = '<p class="no-members">Chargement des groupes...</p>';
-        if (refreshGroupsBtn) refreshGroupsBtn.disabled = true;
+        if (refreshGroupsBtn) {
+            refreshGroupsBtn.disabled = true;
+            refreshGroupsBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Chargement...';
+        }
 
         try {
             const response = await fetch(GET_GROUPS_URL);
@@ -533,7 +548,10 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Erreur de chargement des groupes:', error);
             groupsList.innerHTML = '<p class="no-members">Erreur lors du chargement des groupes.</p>';
         } finally {
-            if (refreshGroupsBtn) refreshGroupsBtn.disabled = false;
+            if (refreshGroupsBtn) {
+                refreshGroupsBtn.disabled = false;
+                refreshGroupsBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Actualiser';
+            }
         }
     }
 
@@ -554,11 +572,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         groupsList.innerHTML = groupsToRender.map(group => `
             <div class="group-item ${selectedGroupIds.has(parseInt(group.id)) ? 'selected' : ''}" data-id="${group.id}">
-                ${groupSelectionMode ? `<input type="checkbox" class="group-checkbox" data-id="${group.id}" ${selectedGroupIds.has(parseInt(group.id)) ? 'checked' : ''}>` : ''}
+                <input type="checkbox" class="group-checkbox" data-id="${group.id}" ${selectedGroupIds.has(parseInt(group.id)) ? 'checked' : ''}>
                 <div class="group-info">
                     <h3>${group.nom}</h3>
                     <p>${group.description || 'Pas de description'}</p>
                 </div>
+                <button class="btn-chat" title="Ouvrir la discussion" data-id="${group.id}" data-type="group">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                    </svg>
+                </button>
                 <div class="group-meta">
                     <span class="member-count">
                         <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -571,9 +594,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `).join('');
 
-        if (groupSelectionMode) {
-            attachGroupSelectionEvents();
-        }
+        attachGroupSelectionEvents();
     }
 
     /**
@@ -773,6 +794,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialisation
     loadGroups();
+
+    // Gestion de la redirection vers le chat (Délégation d'événements)
+    document.addEventListener('click', (e) => {
+        const btnChat = e.target.closest('.btn-chat');
+        if (!btnChat) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        const id = btnChat.dataset.id;
+        const type = btnChat.dataset.type;
+
+        // Redirection vers l'interface de messagerie
+        window.location.href = `${CHAT_URL_BASE}?id=${id}&type=${type}`;
+    });
 
 });
 

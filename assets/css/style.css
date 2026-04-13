@@ -909,12 +909,17 @@ body::before {
 }
 /* --- Group Selection Mode --- */
 .group-checkbox {
+    display: none;
     width: 18px;
     height: 18px;
     min-width: 18px;
     accent-color: var(--primary-500);
     cursor: pointer;
     margin-right: 1.25rem;
+}
+
+.selection-mode .group-checkbox {
+    display: block;
 }
 
 .groups-list.selection-mode .group-item {
@@ -930,4 +935,48 @@ body::before {
     display: flex;
     gap: 0.5rem;
     align-items: center;
+}
+
+/* --- Bouton Chat (Messagerie) --- */
+.btn-chat {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-subtle);
+    border-radius: 50%;
+    color: var(--accent-teal);
+    cursor: pointer;
+    transition: all 0.25s var(--ease-out);
+    flex-shrink: 0;
+}
+
+.btn-chat:hover {
+    background: linear-gradient(135deg, var(--primary-500), var(--accent-teal));
+    color: white;
+    transform: scale(1.1) rotate(-5deg);
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(45, 212, 191, 0.3);
+}
+
+.btn-chat svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Ajustements pour les items avec bouton chat */
+.member-item, .group-item {
+    gap: 1rem;
+}
+
+.member-info, .group-info {
+    flex: 1;
+}
+
+.selection-mode .btn-chat {
+    opacity: 0.3;
+    pointer-events: none;
+    filter: grayscale(1);
 }
